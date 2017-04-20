@@ -1,0 +1,11 @@
+# Backup files
+*.bak
+
+# Visual Studio
+.vs/
+
+# Unity
+UnityClient/Library/
+UnityClient/Temp/
+UnityClient/*.sln
+UnityClient/*.csproj
