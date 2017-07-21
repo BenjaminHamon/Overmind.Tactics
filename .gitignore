@@ -1,11 +1,23 @@
 # Backup files
 *.bak
+*.bak.meta
 
-# Visual Studio
-.vs/
+# Build
+.build/
+
+# NuGet
+packages/
 
 # Unity
 UnityClient/Library/
 UnityClient/Temp/
 UnityClient/*.sln
 UnityClient/*.csproj
+
+# Visual Studio
+.vs/
+*.csproj.user
+*.suo
+
+# Visual Studio Code
+.vscode/
