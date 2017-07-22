@@ -27,6 +27,7 @@ namespace Overmind.Tactics.Model
 		[DataMember]
 		public int HealthPoints;
 		public event Action<Character, int, int> HealthPointsChanged;
+		public bool IsAlive { get { return HealthPoints > 0; } }
 		public event Action<Character> Died;
 		[DataMember]
 		public int ActionPoints;
