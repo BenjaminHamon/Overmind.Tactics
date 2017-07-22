@@ -9,6 +9,8 @@
 packages/
 
 # Unity
+UnityClient/Assets/Plugins/
+UnityClient/Assets/Plugins.meta
 UnityClient/Library/
 UnityClient/Temp/
 UnityClient/*.sln
