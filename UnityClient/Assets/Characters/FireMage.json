@@ -1,0 +1,41 @@
+﻿{
+	"Name": "FireMage",
+	"CharacterSprite": "Character_Example_8",
+
+	"HealthPoints": 100,
+	"ActionPoints": 3,
+	"MoveSpeed": 1,
+
+	"Abilities": [
+		{
+			"Name": "FireBall",
+			"Icon": "Ability_FireBall",
+			"Power": 30,
+			"ActionPoints": 1,
+			"Range": 5,
+			"TargetWidth": 1,
+			"TargetHeight": 1,
+			"TargetTypes": [ "Enemy" ]
+		},
+		{
+			"Name": "FireStorm",
+			"Icon": "Ability_FireStorm",
+			"Power": 50,
+			"ActionPoints": 3,
+			"Range": 3,
+			"TargetWidth": 3,
+			"TargetHeight": 3,
+			"TargetTypes": [ "Enemy" ]
+		},
+		{
+			"Name": "FireWall",
+			"Icon": "Ability_FireWall",
+			"Power": 30,
+			"ActionPoints": 3,
+			"Range": 3,
+			"TargetWidth": 4,
+			"TargetHeight": 2,
+			"TargetTypes": [ "Enemy" ]
+		}
+	]
+}

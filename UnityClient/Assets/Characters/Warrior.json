@@ -1,0 +1,23 @@
+{
+	"Name": "Warrior",
+	"CharacterSprite": "Character_Example_12",
+
+	"HealthPoints": 300,
+	"ActionPoints": 3,
+	"MoveSpeed": 1,
+
+	"DefaultAbility": "Attack",
+	"Abilities": [
+		{
+			"Name": "Attack",
+			"Icon": "Ability_Attack",
+			"Power": 20,
+			"ActionPoints": 1,
+			"Range": 1,
+			"TargetWidth": 1,
+			"TargetHeight": 1,
+			"TargetRequired": true,
+			"TargetTypes": [ "Enemy" ]
+		}
+	]
+}

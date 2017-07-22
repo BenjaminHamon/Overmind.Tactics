@@ -1,0 +1,23 @@
+{
+	"Name": "Archer",
+	"CharacterSprite": "Character_Example_9",
+
+	"HealthPoints": 150,
+	"ActionPoints": 3,
+	"MoveSpeed": 1,
+
+	"DefaultAbility": "RangedAttack",
+	"Abilities": [
+		{
+			"Name": "RangedAttack",
+			"Icon": "Ability_RangedAttack",
+			"Power": 20,
+			"ActionPoints": 1,
+			"Range": 3,
+			"TargetWidth": 1,
+			"TargetHeight": 1,
+			"TargetRequired": true,
+			"TargetTypes": [ "Enemy" ]
+		}
+	]
+}
