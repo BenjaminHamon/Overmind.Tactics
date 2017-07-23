@@ -31,8 +31,6 @@ namespace Overmind.Tactics.Model
 
 		public void SetState(GameState state)
 		{
-			SaveState = state;
-
 			string serializedState;
 			using (StringWriter stringWriter = new StringWriter())
 			using (JsonWriter jsonWriter = new JsonTextWriter(stringWriter))
@@ -43,10 +41,10 @@ namespace Overmind.Tactics.Model
 
 			using (StringReader stringReader = new StringReader(serializedState))
 			using (JsonReader jsonReader = new JsonTextReader(stringReader))
-			{
-				ActiveState = serializer.Deserialize<GameState>(jsonReader);
-				ActiveState.CommandHistory = new List<IGameCommand>();
-			}
+				SaveState = serializer.Deserialize<GameState>(jsonReader);
+
+			ActiveState = state;
+			ActiveState.CommandHistory = new List<IGameCommand>();
 		}
 
 		public void Save(string path, GameState state)
