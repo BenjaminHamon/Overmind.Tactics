@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Overmind.Tactics.UnityClient.Tests
 {
-	public class Test_CharacterView : MonoBehaviour
+	internal class Test_CharacterView : MonoBehaviour
 	{
 		[SerializeField]
 		private CharacterView character;
