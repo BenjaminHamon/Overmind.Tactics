@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="left-up" width="10" height="10" tilewidth="128" tileheight="128" nextobjectid="1">
+ <tileset firstgid="1" source="TerrainAtlas.tsx"/>
+ <layer name="Water" width="10" height="10">
+  <properties>
+   <property name="unity:ignore" value="visual"/>
+   <property name="unity:layer" value="Water"/>
+   <property name="unity:sortingLayerName" value="Terrain"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="Ground" width="10" height="10">
+  <properties>
+   <property name="unity:ignore" value="visual"/>
+   <property name="unity:layer" value="Ground"/>
+   <property name="unity:sortingLayerName" value="Terrain"/>
+  </properties>
+  <data encoding="csv">
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17,
+17,17,17,17,17,17,17,17,17,17
+</data>
+ </layer>
+ <layer name="Terrain" width="10" height="10">
+  <properties>
+   <property name="unity:ignore" value="collision"/>
+   <property name="unity:sortingLayerName" value="Terrain"/>
+  </properties>
+  <data encoding="csv">
+17,17,34,17,34,34,35,34,17,34,
+35,35,17,17,34,17,17,35,34,34,
+17,17,34,34,35,34,34,34,34,34,
+35,17,34,35,34,34,35,17,17,34,
+17,17,34,34,35,17,17,17,17,34,
+34,34,17,17,35,34,17,17,34,35,
+17,17,34,35,34,35,17,34,17,34,
+35,35,17,17,35,35,34,34,35,35,
+17,17,35,34,17,34,17,34,34,34,
+35,34,17,17,34,17,17,17,17,34
+</data>
+ </layer>
+</map>
