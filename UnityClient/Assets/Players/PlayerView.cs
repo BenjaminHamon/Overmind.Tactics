@@ -11,6 +11,8 @@ namespace Overmind.Tactics.UnityClient
 		public Player Model;
 		public string PlayerName { get { return Model.Name; } }
 
+		public GameObject LocalController;
+
 		public Func<IEnumerable<CharacterView>> GetCharacterCollection;
 
 		private CharacterView selection;
@@ -53,14 +55,14 @@ namespace Overmind.Tactics.UnityClient
 
 		public void Enable()
 		{
-			gameObject.SetActive(true);
+			LocalController?.SetActive(true);
 			Selection = GetCharacterCollection().FirstOrDefault();
 		}
 
 		public void Disable()
 		{
 			Selection = null;
-			gameObject.SetActive(false);
+			LocalController?.SetActive(false);
 		}
 		
 		public void SelectPrevious()
