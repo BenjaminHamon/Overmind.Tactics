@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overmind.Tactics.Model;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,17 +9,6 @@ namespace Overmind.Tactics.UnityClient.Editor
 	public class GameInspector : UnityEditor.Editor
 	{
 		private static bool isModelGroupVisible = true;
-
-		public void Awake()
-		{
-			GameView gameView = (GameView)target;
-			gameView.InitializeSerialization(gameView.Model);
-		}
-
-		public void Start()
-		{
-			Debug.Log("GameInspector.Start");
-		}
 
 		public override void OnInspectorGUI()
 		{
@@ -44,15 +34,31 @@ namespace Overmind.Tactics.UnityClient.Editor
 				EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(gameView.GameSavePath));
 
 				if (GUILayout.Button("Save"))
-					gameView.Save(gameView.GameSavePath, false);
+					Save(gameView, false);
 				if (GUILayout.Button("Save with history"))
-					gameView.Save(gameView.GameSavePath, true);
+					Save(gameView, true);
 				if (GUILayout.Button("Load"))
 					gameView.Load(gameView.GameSavePath);
 
 				EditorGUI.EndDisabledGroup();
 				EditorGUILayout.EndHorizontal();
 			}
+		}
+
+		private void Save(GameView gameView, bool withHistory)
+		{
+			if (Application.isPlaying == false)
+			{
+				gameView.InitializeSerialization(gameView.Model);
+
+				foreach (Character character in gameView.Model.ActiveState.CharacterCollection)
+				{
+					character.HealthPoints = 0;
+					character.ActionPoints = 0;
+				}
+			}
+
+			gameView.Save(gameView.GameSavePath, withHistory);
 		}
 	}
 }

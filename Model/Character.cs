@@ -24,13 +24,19 @@ namespace Overmind.Tactics.Model
 		public Vector2 Position;
 		public event Action<Character, List<Vector2>> Moved;
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int HealthPoints;
 		public event Action<Character, int, int> HealthPointsChanged;
 		public bool IsAlive { get { return HealthPoints > 0; } }
 		public event Action<Character> Died;
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int ActionPoints;
+		
+		internal void Initialize()
+		{
+			HealthPoints = CharacterClass.HealthPoints;
+			ActionPoints = CharacterClass.ActionPoints;
+		}
 
 		internal void StartTurn()
 		{

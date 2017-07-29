@@ -34,10 +34,26 @@ namespace Overmind.Tactics.Model
 		public INavigation Navigation { get; private set; }
 		public Func<Vector2, Vector2, IEnumerable<Character>> GetCharactersInArea { get; private set; }
 
-		public void Initialize(INavigation navigation, Func<Vector2, Vector2, IEnumerable<Character>> getCharactersInArea)
+		public void Initialize(Game game, INavigation navigation, Func<Vector2, Vector2, IEnumerable<Character>> getCharactersInArea)
 		{
 			this.Navigation = navigation;
 			this.GetCharactersInArea = getCharactersInArea;
+
+			Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
+			foreach (Character character in CharacterCollection)
+			{
+				if (characterClassCollection.ContainsKey(character.CharacterClass_Key) == false)
+					characterClassCollection[character.CharacterClass_Key] = game.LoadCharacterClass(character.CharacterClass_Key);
+
+				character.Owner = PlayerCollection.Single(player => player.Id == character.OwnerId);
+				character.CharacterClass = characterClassCollection[character.CharacterClass_Key];
+
+				if (Turn == 0)
+					character.Initialize();
+			}
+
+			if (ActivePlayerId != Guid.Empty)
+				ActivePlayer = PlayerCollection.Single(player => player.Id == ActivePlayerId);
 		}
 
 		public void Start()

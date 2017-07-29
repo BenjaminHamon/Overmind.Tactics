@@ -66,19 +66,6 @@ namespace Overmind.Tactics.Model
 			using (JsonReader jsonReader = new JsonTextReader(stringReader))
 				ActiveState = serializer.Deserialize<GameState>(jsonReader);
 
-			Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
-			foreach (Character character in ActiveState.CharacterCollection)
-			{
-				if (characterClassCollection.ContainsKey(character.CharacterClass_Key) == false)
-					characterClassCollection[character.CharacterClass_Key] = LoadCharacterClass(character.CharacterClass_Key);
-
-				character.Owner = ActiveState.PlayerCollection.Single(player => player.Id == character.OwnerId);
-				character.CharacterClass = characterClassCollection[character.CharacterClass_Key];
-			}
-
-			if (ActiveState.ActivePlayerId != Guid.Empty)
-				ActiveState.ActivePlayer = ActiveState.PlayerCollection.Single(player => player.Id == ActiveState.ActivePlayerId);
-
 			ActiveState.CommandHistory = new List<IGameCommand>();
 		}
 

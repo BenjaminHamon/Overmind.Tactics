@@ -24,7 +24,7 @@ namespace Overmind.Tactics.UnityClient
 			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner.Name);
 			characterSprite.sprite = Resources.Load<Sprite>("Characters/" + Model.CharacterClass.CharacterSprite);
 			transform.localPosition = Model.Position.ToUnityVector();
-			healthBar.localScale = new Vector3((float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
+			healthBar.localScale = new Vector3(Model.HealthPoints == 0 ? 0 : (float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
 		}
 
 		public void Start()

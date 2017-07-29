@@ -60,6 +60,7 @@ namespace Overmind.Tactics.UnityClient
 			{
 				InitializeSerialization(Model);
 				UpdateModelFromScene();
+				Model.ActiveState.Initialize(Model, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 			}
 		}
 
@@ -75,8 +76,6 @@ namespace Overmind.Tactics.UnityClient
 		public void Start()
 		{
 			Debug.Log("[GameView] Start");
-
-			Model.ActiveState.Initialize(new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 
 			foreach (PlayerView playerView in playerCollection)
 				playerView.GetCharacterCollection = () => CharacterCollection.Where(c => c.Model.Owner == playerView.Model);
@@ -115,11 +114,11 @@ namespace Overmind.Tactics.UnityClient
 			Game gameModel = new Game();
 			InitializeSerialization(gameModel);
 			gameModel.Load(path);
-			gameModel.ActiveState.Initialize(new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 			this.Model = gameModel;
 
 			Debug.LogFormat(this, "[GameView] Loaded from {0}", path);
 
+			Model.ActiveState.Initialize(Model, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 			ApplyModelToScene();
 		}
 
@@ -144,6 +143,7 @@ namespace Overmind.Tactics.UnityClient
 			List<CharacterView> characterViewCollection = characterGroup.GetComponentsInChildren<CharacterView>(true).ToList();
 			foreach (CharacterView characterView in characterViewCollection)
 			{
+				// Do no rely on Id here because Guids are not serialized by Unity
 				characterView.Model.Owner = gameState.PlayerCollection.Single(p => p.Name == characterView.Model.Owner.Name);
 				characterView.Model.OwnerId = characterView.Model.Owner.Id;
 				characterView.Model.Position = ((UnityEngine.Vector2)characterView.transform.localPosition).ToModelVector();
