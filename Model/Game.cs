@@ -70,11 +70,7 @@ namespace Overmind.Tactics.Model
 			foreach (Character character in ActiveState.CharacterCollection)
 			{
 				if (characterClassCollection.ContainsKey(character.CharacterClass_Key) == false)
-				{
-					using (StreamReader streamReader = new StreamReader("Assets/Characters/" + character.CharacterClass_Key + ".json"))
-					using (JsonReader jsonReader = new JsonTextReader(streamReader))
-						characterClassCollection[character.CharacterClass_Key] = serializer.Deserialize<CharacterClass>(jsonReader);
-				}
+					characterClassCollection[character.CharacterClass_Key] = LoadCharacterClass(character.CharacterClass_Key);
 
 				character.Owner = ActiveState.PlayerCollection.Single(player => player.Id == character.OwnerId);
 				character.CharacterClass = characterClassCollection[character.CharacterClass_Key];
@@ -84,6 +80,13 @@ namespace Overmind.Tactics.Model
 				ActiveState.ActivePlayer = ActiveState.PlayerCollection.Single(player => player.Id == ActiveState.ActivePlayerId);
 
 			ActiveState.CommandHistory = new List<IGameCommand>();
+		}
+
+		public CharacterClass LoadCharacterClass(string name)
+		{
+			using (StreamReader streamReader = new StreamReader("Assets/Characters/" + name + ".json"))
+			using (JsonReader jsonReader = new JsonTextReader(streamReader))
+				return serializer.Deserialize<CharacterClass>(jsonReader);
 		}
 	}
 }
