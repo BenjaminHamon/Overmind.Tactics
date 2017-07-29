@@ -24,7 +24,7 @@ namespace Overmind.Tactics.Model
 		[DataMember(EmitDefaultValue = false)]
 		public int Turn;
 		[DataMember(Name = nameof(ActivePlayer), EmitDefaultValue = false)]
-		public Guid ActivePlayerId;
+		public string ActivePlayerId;
 		public Player ActivePlayer;
 		public event Action<GameState> ActivePlayerChanged;
 
@@ -52,7 +52,7 @@ namespace Overmind.Tactics.Model
 					character.Initialize();
 			}
 
-			if (ActivePlayerId != Guid.Empty)
+			if (String.IsNullOrEmpty(ActivePlayerId) == false)
 				ActivePlayer = PlayerCollection.Single(player => player.Id == ActivePlayerId);
 		}
 

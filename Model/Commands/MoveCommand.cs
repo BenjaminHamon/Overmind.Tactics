@@ -9,7 +9,7 @@ namespace Overmind.Tactics.Model.Commands
 	public class MoveCommand : IGameCommand
 	{
 		[DataMember(Name = nameof(Character))]
-		public Guid CharacterId;
+		public string CharacterId;
 		public Character Character;
 
 		[DataMember]

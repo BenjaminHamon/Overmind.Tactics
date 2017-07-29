@@ -143,7 +143,7 @@ namespace Overmind.Tactics.UnityClient
 			List<CharacterView> characterViewCollection = characterGroup.GetComponentsInChildren<CharacterView>(true).ToList();
 			foreach (CharacterView characterView in characterViewCollection)
 			{
-				// Do no rely on Id here because Guids are not serialized by Unity
+				// Prefer relying on the name so that you need to set the name instead of the id in the scene
 				characterView.Model.Owner = gameState.PlayerCollection.Single(p => p.Name == characterView.Model.Owner.Name);
 				characterView.Model.OwnerId = characterView.Model.Owner.Id;
 				characterView.Model.Position = ((UnityEngine.Vector2)characterView.transform.localPosition).ToModelVector();

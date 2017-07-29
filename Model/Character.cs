@@ -10,10 +10,10 @@ namespace Overmind.Tactics.Model
 	public class Character
 	{
 		[DataMember]
-		public Guid Id = Guid.NewGuid();
+		public string Id = Guid.NewGuid().ToString();
 
 		[DataMember]
-		public Guid OwnerId;
+		public string OwnerId;
 		public Player Owner;
 
 		[DataMember(Name = nameof(CharacterClass))]

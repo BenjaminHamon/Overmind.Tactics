@@ -10,7 +10,7 @@ namespace Overmind.Tactics.Model
 	public class Player
 	{
 		[DataMember]
-		public Guid Id = Guid.NewGuid();
+		public string Id = Guid.NewGuid().ToString();
 		[DataMember]
 		public string Name;
 

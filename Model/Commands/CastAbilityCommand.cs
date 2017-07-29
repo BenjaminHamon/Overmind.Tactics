@@ -8,7 +8,7 @@ namespace Overmind.Tactics.Model.Commands
 	public class CastAbilityCommand : IGameCommand
 	{
 		[DataMember(Name = nameof(Character))]
-		public Guid CharacterId;
+		public string CharacterId;
 		public Character Character;
 
 		[DataMember(Name = nameof(Ability))]

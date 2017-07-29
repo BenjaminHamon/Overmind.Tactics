@@ -8,7 +8,7 @@ namespace Overmind.Tactics.Model.Commands
 	public class EndTurnCommand : IGameCommand
 	{
 		[DataMember(Name = nameof(Player))]
-		public Guid PlayerId;
+		public string PlayerId;
 		public Player Player;
 
 		public bool TryExecute(GameState state)
