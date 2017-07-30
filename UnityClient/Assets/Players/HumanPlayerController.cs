@@ -247,8 +247,7 @@ namespace Overmind.Tactics.UnityClient
 				Instantiate(abilityRangeIndicatorPrefab, new Vector2(0, currentPosition.y), Quaternion.identity, abilityRangeIndicatorGroup);
 
 				currentPosition.x = 1;
-				// Add half a tile to range to make a circle reaching to the tile end instead of the tile center
-				while (currentPosition.sqrMagnitude <= (range + 0.5f) * (range + 0.5f))
+				while (currentPosition.sqrMagnitude <= range * range)
 				{
 					Instantiate(abilityRangeIndicatorPrefab, currentPosition, Quaternion.identity, abilityRangeIndicatorGroup);
 					Instantiate(abilityRangeIndicatorPrefab, new Vector2(-currentPosition.x, currentPosition.y), Quaternion.identity, abilityRangeIndicatorGroup);

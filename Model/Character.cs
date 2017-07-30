@@ -69,8 +69,7 @@ namespace Overmind.Tactics.Model
 
 		public bool Cast(Ability ability, Vector2 targetCenter, Func<Vector2, Vector2, IEnumerable<Character>> getCharactersInArea)
 		{
-			// Add half a tile to range to make a circle reaching to the tile end instead of the tile center
-			if ((ActionPoints < ability.ActionPoints) || ((targetCenter - Position).Norm > ability.Range + 0.5f))
+			if ((ActionPoints < ability.ActionPoints) || ((targetCenter - Position).Norm > ability.Range))
 				return false;
 
 			Vector2 bottomLeft = new Vector2(targetCenter.X - ability.TargetWidth / 2f + 0.05f, targetCenter.Y - ability.TargetHeight / 2f + 0.05f);
