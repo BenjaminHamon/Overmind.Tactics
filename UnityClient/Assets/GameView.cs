@@ -125,7 +125,7 @@ namespace Overmind.Tactics.UnityClient
 
 			Debug.LogFormat(this, "[GameView] Loaded from {0}", path);
 
-			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
+			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetAbilityTargets);
 			ApplyModelToScene();
 		}
 
@@ -162,7 +162,7 @@ namespace Overmind.Tactics.UnityClient
 			this.playerCollection = playerViewCollection;
 			this.CharacterCollection = characterViewCollection;
 			
-			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
+			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetAbilityTargets);
 			foreach (PlayerView playerView in playerViewCollection)
 				playerView.UpdateFromModel();
 			foreach (CharacterView characterView in characterViewCollection)
@@ -220,12 +220,20 @@ namespace Overmind.Tactics.UnityClient
 			return (hit.collider != null) && (accessibleLayerMask == (accessibleLayerMask | (1 << hit.collider.gameObject.layer)));
 		}
 
-		private IEnumerable<Character> GetCharactersInArea(Model.Vector2 bottomLeft, Model.Vector2 topRight)
+		private IEnumerable<Character> GetAbilityTargets(Ability ability, Model.Vector2 casterPosition, Model.Vector2 targetPosition)
 		{
-			//Debug.LogFormat(this, "[GameView] GetCharactersInArea (BottomLeft: {0}, TopRight: {1})", bottomLeft, topRight);
-			//Debug.DrawLine(bottomLeft.ToUnityVector(), topRight.ToUnityVector(), Color.red, 3);
+			UnityEngine.Vector2 bottomLeft = new UnityEngine.Vector2(- ability.TargetWidth / 2f + 0.05f, - ability.TargetHeight / 2f + 0.05f);
+			UnityEngine.Vector2 topRight = new UnityEngine.Vector2(ability.TargetWidth / 2f - 0.05f, ability.TargetHeight / 2f - 0.05f);
+			float angle = ability.GetRotation(casterPosition, targetPosition);
+			bottomLeft = Quaternion.AngleAxis(angle, Vector3.forward) * bottomLeft;
+			topRight = Quaternion.AngleAxis(angle, Vector3.forward) * topRight;
+			bottomLeft += targetPosition.ToUnityVector();
+			topRight += targetPosition.ToUnityVector();
 
-			return Physics2D.OverlapAreaAll(bottomLeft.ToUnityVector(), topRight.ToUnityVector())
+			//Debug.LogFormat(this, "[GameView] GetAbilityTargets (BottomLeft: {0}, TopRight: {1})", bottomLeft, topRight);
+			//Debug.DrawLine(bottomLeft, topRight, Color.red, 3);
+
+			return Physics2D.OverlapAreaAll(bottomLeft, topRight)
 				.Select(target => target.GetComponent<CharacterView>()?.Model).Where(target => (target != null));
 		}
 	}

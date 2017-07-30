@@ -136,8 +136,11 @@ namespace Overmind.Tactics.UnityClient
 
 			Character selection = Player.Selection.Model;
 			Vector2 targetPosition = RoundTargetPosition(Camera.ScreenToWorldPoint(Input.mousePosition), currentAbility);
-
-			targetIndicator.transform.localPosition = targetPosition;
+			if ((Vector2)targetIndicator.transform.localPosition != targetPosition)
+			{
+				targetIndicator.transform.localPosition = targetPosition;
+				targetIndicator.transform.localEulerAngles = new Vector3(0, 0, currentAbility.GetRotation(selection.Position, targetPosition.ToModelVector()));
+			}
 			targetIndicator.SetActive(true);
 
 			if (currentAbility == null)

@@ -32,12 +32,12 @@ namespace Overmind.Tactics.Model
 		public event Action<GameState, Player> GameEnded;
 
 		public INavigation Navigation { get; private set; }
-		public Func<Vector2, Vector2, IEnumerable<Character>> GetCharactersInArea { get; private set; }
+		public Func<Ability, Vector2, Vector2, IEnumerable<Character>> GetAbilityTargets { get; private set; }
 
-		public void Initialize(ContentProvider contentProvider, INavigation navigation, Func<Vector2, Vector2, IEnumerable<Character>> getCharactersInArea)
+		public void Initialize(ContentProvider contentProvider, INavigation navigation, Func<Ability, Vector2, Vector2, IEnumerable<Character>> getAbilityTargets)
 		{
 			this.Navigation = navigation;
-			this.GetCharactersInArea = getCharactersInArea;
+			this.GetAbilityTargets = getAbilityTargets;
 
 			Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
 			foreach (Character character in CharacterCollection)

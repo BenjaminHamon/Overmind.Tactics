@@ -25,7 +25,7 @@ namespace Overmind.Tactics.Model.Commands
 			if (Ability == null)
 				Ability = Character.CharacterClass.Abilities.Single(a => a.Name == AbilityName);
 
-			return Character.Cast(Ability, Target, state.GetCharactersInArea);
+			return Character.Cast(Ability, Target, state.GetAbilityTargets);
 		}
 	}
 }

@@ -67,15 +67,12 @@ namespace Overmind.Tactics.Model
 			return true;
 		}
 
-		public bool Cast(Ability ability, Vector2 targetCenter, Func<Vector2, Vector2, IEnumerable<Character>> getCharactersInArea)
+		public bool Cast(Ability ability, Vector2 targetCenter, Func<Ability, Vector2, Vector2, IEnumerable<Character>> getAbilityTargets)
 		{
 			if ((ActionPoints < ability.ActionPoints) || ((targetCenter - Position).Norm > ability.Range))
 				return false;
 
-			Vector2 bottomLeft = new Vector2(targetCenter.X - ability.TargetWidth / 2f + 0.05f, targetCenter.Y - ability.TargetHeight / 2f + 0.05f);
-			Vector2 topRight = new Vector2(targetCenter.X + ability.TargetWidth / 2f - 0.05f, targetCenter.Y + ability.TargetHeight / 2f - 0.05f);
-			List<Character> targetCollection = getCharactersInArea(bottomLeft, topRight).Where(target => IsTargetAllowed(ability, target)).ToList();
-
+			List<Character> targetCollection = getAbilityTargets(ability, Position, targetCenter).Where(target => IsTargetAllowed(ability, target)).ToList();
 			if (ability.TargetRequired && (targetCollection.Any() == false))
 				return false;
 

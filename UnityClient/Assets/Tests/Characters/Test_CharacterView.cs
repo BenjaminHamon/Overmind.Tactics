@@ -62,7 +62,7 @@ namespace Overmind.Tactics.UnityClient.Tests
 
 			Ability ability = new Ability() { Power = 2, TargetTypes = new List<TargetType>() { TargetType.Self } };
 			character.Model.Cast(ability, ((UnityEngine.Vector2)character.transform.localPosition).ToModelVector(),
-				(bottomLeft, topRight) => new List<Character>() { character.Model });
+				(castedAbility, casterPosition, targetPosition) => new List<Character>() { character.Model });
 			yield return new WaitForSeconds(3);
 		}
 
@@ -75,7 +75,7 @@ namespace Overmind.Tactics.UnityClient.Tests
 
 			Ability ability = new Ability() { Power = 20, TargetTypes = new List<TargetType>() { TargetType.Self } };
 			character.Model.Cast(ability, ((UnityEngine.Vector2)character.transform.localPosition).ToModelVector(),
-				(bottomLeft, topRight) => new List<Character>() { character.Model });
+				(castedAbility, casterPosition, targetPosition) => new List<Character>() { character.Model });
 			yield return new WaitForSeconds(3);
 		}
 	}
