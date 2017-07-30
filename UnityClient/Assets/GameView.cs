@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Overmind.Tactics.UnityClient
 {
-	public class GameView : MonoBehaviour
+	public class GameView : MonoBehaviour, ISerializationCallbackReceiver
 	{
 		[SerializeField]
 		private Transform mapGroup;
@@ -24,6 +24,7 @@ namespace Overmind.Tactics.UnityClient
 		[SerializeField]
 		private GameObject humanPlayerControllerPrefab;
 		
+		public string GameScenarioPath;
 		public string GameSavePath;
 		public Game Model;
 
@@ -34,6 +35,17 @@ namespace Overmind.Tactics.UnityClient
 		public List<CharacterView> CharacterCollection;
 		
 		public int Turn { get { return Model.ActiveState.Turn; } }
+
+		private readonly ContentProvider contentProvider;
+
+		public GameView()
+		{
+			JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
+			contentProvider = new ContentProvider(serializer, "Assets", "UserData");
+		}
+
+		public void OnBeforeSerialize() { }
+		public void OnAfterDeserialize() { Model.Initialize(contentProvider); }
 
 		// About game initialization
 		// We want to handle two cases: loading from a saved state and starting from an existing scene.
@@ -55,22 +67,14 @@ namespace Overmind.Tactics.UnityClient
 			Debug.Log("[GameView] Awake");
 
 			if (String.IsNullOrEmpty(GameSavePath) == false)
-				Load(GameSavePath);
+				Load(GameSavePath, false);
+			else if (String.IsNullOrEmpty(GameScenarioPath) == false)
+				Load(GameScenarioPath, true);
 			else
 			{
-				InitializeSerialization(Model);
 				UpdateModelFromScene();
-				Model.ActiveState.Initialize(Model, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
+				Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 			}
-		}
-
-		// Serialization must be initialized for the following flows:
-		//   When starting the editor and not loading a game save, handled by GameInspector.Awake
-		//   When loading a game save, handled by GameView.Load
-		//   When starting to play, handled by GameView.Awake
-		public void InitializeSerialization(Game model)
-		{
-			model.Initialize(new JsonSerializer() { Formatting = Formatting.Indented });
 		}
 
 		public void Start()
@@ -103,22 +107,28 @@ namespace Overmind.Tactics.UnityClient
 		// The save state can be used to replay commands to get to any past point in the game.
 		// The scene can be modified in the editor directly and used to update the model to create saves for game scenarios.
 
-		public void Save(string path, bool withHistory)
+		public void SaveScenario(string path)
 		{
-			Model.Save(path, withHistory ? Model.SaveState : Model.ActiveState);
+			Model.SaveScenario(path, Model.ActiveState);
 			Debug.LogFormat(this, "[GameView] Saved to {0}", path);
 		}
 
-		public void Load(string path)
+		public void SaveGame(string path, bool withHistory)
 		{
-			Game gameModel = new Game();
-			InitializeSerialization(gameModel);
-			gameModel.Load(path);
-			this.Model = gameModel;
+			Model.SaveGame(path, withHistory ? Model.SaveState : Model.ActiveState);
+			Debug.LogFormat(this, "[GameView] Saved to {0}", path);
+		}
+
+		public void Load(string path, bool asScenario)
+		{
+			if (asScenario)
+				Model.LoadScenario(path);
+			else
+				Model.LoadGame(path);
 
 			Debug.LogFormat(this, "[GameView] Loaded from {0}", path);
 
-			Model.ActiveState.Initialize(Model, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
+			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
 			ApplyModelToScene();
 		}
 
@@ -147,7 +157,7 @@ namespace Overmind.Tactics.UnityClient
 				characterView.Model.Owner = gameState.PlayerCollection.Single(p => p.Name == characterView.Model.Owner.Name);
 				characterView.Model.OwnerId = characterView.Model.Owner.Id;
 				characterView.Model.Position = ((UnityEngine.Vector2)characterView.transform.localPosition).ToModelVector();
-				characterView.Model.CharacterClass = Model.LoadCharacterClass(characterView.Model.CharacterClass_Key);
+				characterView.Model.CharacterClass = contentProvider.GetCharacterClass(characterView.Model.CharacterClass_Key);
 				gameState.CharacterCollection.Add(characterView.Model);
 			}
 

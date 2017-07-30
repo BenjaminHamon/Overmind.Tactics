@@ -1,5 +1,4 @@
-﻿using Overmind.Tactics.Model;
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,34 +30,25 @@ namespace Overmind.Tactics.UnityClient.Editor
 				EditorGUILayout.EndHorizontal();
 
 				EditorGUILayout.BeginHorizontal();
+				EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(gameView.GameScenarioPath));
+				if (GUILayout.Button("Save scenario"))
+					gameView.SaveScenario(gameView.GameScenarioPath);
+				if (GUILayout.Button("Load scenario"))
+					gameView.Load(gameView.GameScenarioPath, true);
+				EditorGUI.EndDisabledGroup();
+				EditorGUILayout.EndHorizontal();
+
+				EditorGUILayout.BeginHorizontal();
 				EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(gameView.GameSavePath));
-
 				if (GUILayout.Button("Save"))
-					Save(gameView, false);
+					gameView.SaveGame(gameView.GameScenarioPath, false);
 				if (GUILayout.Button("Save with history"))
-					Save(gameView, true);
+					gameView.SaveGame(gameView.GameScenarioPath, true);
 				if (GUILayout.Button("Load"))
-					gameView.Load(gameView.GameSavePath);
-
+					gameView.Load(gameView.GameSavePath, false);
 				EditorGUI.EndDisabledGroup();
 				EditorGUILayout.EndHorizontal();
 			}
-		}
-
-		private void Save(GameView gameView, bool withHistory)
-		{
-			if (Application.isPlaying == false)
-			{
-				gameView.InitializeSerialization(gameView.Model);
-
-				foreach (Character character in gameView.Model.ActiveState.CharacterCollection)
-				{
-					character.HealthPoints = 0;
-					character.ActionPoints = 0;
-				}
-			}
-
-			gameView.Save(gameView.GameSavePath, withHistory);
 		}
 	}
 }

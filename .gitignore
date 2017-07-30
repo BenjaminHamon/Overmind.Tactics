@@ -23,3 +23,6 @@ UnityClient/*.csproj
 
 # Visual Studio Code
 .vscode/
+
+# Game user data
+UnityClient/UserData

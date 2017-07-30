@@ -1,21 +1,18 @@
-﻿using Newtonsoft.Json;
-using Overmind.Tactics.Model.Commands;
+﻿using Overmind.Tactics.Model.Commands;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Overmind.Tactics.Model
 {
 	[Serializable]
 	public class Game
 	{
-		public void Initialize(JsonSerializer serializer)
+		public void Initialize(ContentProvider contentProvider)
 		{
-			this.serializer = serializer;
+			this.contentProvider = contentProvider;
 		}
 
-		private JsonSerializer serializer;
+		private ContentProvider contentProvider;
 
 		public GameState ActiveState = new GameState();
 		public GameState SaveState = new GameState();
@@ -31,49 +28,28 @@ namespace Overmind.Tactics.Model
 
 		public void SetState(GameState state)
 		{
-			string serializedState;
-			using (StringWriter stringWriter = new StringWriter())
-			using (JsonWriter jsonWriter = new JsonTextWriter(stringWriter))
-			{
-				serializer.Serialize(jsonWriter, state);
-				serializedState = stringWriter.ToString();
-			}
-
-			using (StringReader stringReader = new StringReader(serializedState))
-			using (JsonReader jsonReader = new JsonTextReader(stringReader))
-				SaveState = serializer.Deserialize<GameState>(jsonReader);
-
+			SaveState = contentProvider.Copy(state);
 			ActiveState = state;
 			ActiveState.CommandHistory = new List<IGameCommand>();
 		}
 
-		public void Save(string path, GameState state)
+		public void LoadScenario(string path) { SetState(contentProvider.LoadScenario(path)); }
+		public void SaveScenario(string path, GameState gameState)
 		{
-			using (StreamWriter streamWriter = new StreamWriter(path))
-			using (JsonWriter jsonWriter = new JsonTextWriter(streamWriter))
-				serializer.Serialize(jsonWriter, state);
+			if (gameState.Turn == 0)
+			{
+				// Reset some data set by the game initialization so that it is not serialized
+				foreach (Character character in gameState.CharacterCollection)
+				{
+					character.HealthPoints = 0;
+					character.ActionPoints = 0;
+				}
+			}
+
+			contentProvider.SaveScenario(path, gameState);
 		}
-
-		public void Load(string path)
-		{
-			string serializedState = File.ReadAllText(path);
-
-			using (StringReader stringReader = new StringReader(serializedState))
-			using (JsonReader jsonReader = new JsonTextReader(stringReader))
-				SaveState = serializer.Deserialize<GameState>(jsonReader);
-
-			using (StringReader stringReader = new StringReader(serializedState))
-			using (JsonReader jsonReader = new JsonTextReader(stringReader))
-				ActiveState = serializer.Deserialize<GameState>(jsonReader);
-
-			ActiveState.CommandHistory = new List<IGameCommand>();
-		}
-
-		public CharacterClass LoadCharacterClass(string name)
-		{
-			using (StreamReader streamReader = new StreamReader("Assets/Characters/" + name + ".json"))
-			using (JsonReader jsonReader = new JsonTextReader(streamReader))
-				return serializer.Deserialize<CharacterClass>(jsonReader);
-		}
+		
+		public void LoadGame(string path) { SetState(contentProvider.LoadGame(path)); }
+		public void SaveGame(string path, GameState gameState) { contentProvider.SaveGame(path, gameState); }
 	}
 }
