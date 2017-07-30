@@ -71,10 +71,7 @@ namespace Overmind.Tactics.UnityClient
 			else if (String.IsNullOrEmpty(GameScenarioPath) == false)
 				Load(GameScenarioPath, true);
 			else
-			{
 				UpdateModelFromScene();
-				Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
-			}
 		}
 
 		public void Start()
@@ -164,6 +161,12 @@ namespace Overmind.Tactics.UnityClient
 			Model.SetState(gameState);
 			this.playerCollection = playerViewCollection;
 			this.CharacterCollection = characterViewCollection;
+			
+			Model.ActiveState.Initialize(contentProvider, new AstarNavigation(IsTileAccessible), GetCharactersInArea);
+			foreach (PlayerView playerView in playerViewCollection)
+				playerView.UpdateFromModel();
+			foreach (CharacterView characterView in characterViewCollection)
+				characterView.UpdateFromModel();
 
 			Debug.LogFormat(this, "[GameView] Updated model from scene");
 		}
