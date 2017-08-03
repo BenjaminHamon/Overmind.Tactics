@@ -41,9 +41,9 @@ namespace Overmind.Tactics.UnityClient.Editor
 				EditorGUILayout.BeginHorizontal();
 				EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(gameView.GameSavePath));
 				if (GUILayout.Button("Save"))
-					gameView.SaveGame(gameView.GameScenarioPath, false);
+					gameView.SaveGame(gameView.GameSavePath, false);
 				if (GUILayout.Button("Save with history"))
-					gameView.SaveGame(gameView.GameScenarioPath, true);
+					gameView.SaveGame(gameView.GameSavePath, true);
 				if (GUILayout.Button("Load"))
 					gameView.Load(gameView.GameSavePath, false);
 				EditorGUI.EndDisabledGroup();

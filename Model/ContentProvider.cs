@@ -13,7 +13,7 @@ namespace Overmind.Tactics.Model
 			this.userDirectory = userDirectory;
 		}
 
-		private readonly JsonSerializer serializer;
+		protected readonly JsonSerializer serializer;
 		private readonly string contentDirectory;
 		private readonly string userDirectory;
 		private readonly Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
@@ -21,17 +21,23 @@ namespace Overmind.Tactics.Model
 		public CharacterClass GetCharacterClass(string name)
 		{
 			if (characterClassCollection.ContainsKey(name) == false)
-				characterClassCollection[name] = Load<CharacterClass>(contentDirectory, "Characters/" + name);
+				characterClassCollection[name] = LoadContent<CharacterClass>("Characters/" + name);
 			return characterClassCollection[name];
 		}
 
-		public GameState LoadScenario(string path) { return Load<GameState>(contentDirectory, "Scenarios/" + path); }
-		public void SaveScenario(string path, GameState gameState) { Save(contentDirectory, "Scenarios/" + path, gameState); }
+		public GameState LoadScenario(string path) { return LoadContent<GameState>("Scenarios/" + path); }
+		public void SaveScenario(string path, GameState gameState) { SaveContent("Scenarios/" + path, gameState); }
 
-		public GameState LoadGame(string path) { return Load<GameState>(userDirectory, "Saves/" + path); }
-		public void SaveGame(string path, GameState gameState) { Save(userDirectory, "Saves/" + path, gameState); }
+		public GameState LoadGame(string path) { return LoadUserData<GameState>("Saves/" + path); }
+		public void SaveGame(string path, GameState gameState) { SaveUserData("Saves/" + path, gameState); }
 
-		private TData Load<TData>(string directory, string path)
+		protected virtual TData LoadContent<TData>(string path) { return Load<TData>(contentDirectory, path); }
+		protected virtual void SaveContent<TData>(string path, TData data) { Save(contentDirectory, path, data); }
+
+		protected virtual TData LoadUserData<TData>(string path) { return Load<TData>(userDirectory, path); }
+		protected virtual void SaveUserData<TData>(string path, TData data) { Save(userDirectory, path, data); }
+
+		protected virtual TData Load<TData>(string directory, string path)
 		{
 			path = Path.Combine(directory, path + ".json");
 			using (StreamReader streamReader = new StreamReader(path))
@@ -39,7 +45,7 @@ namespace Overmind.Tactics.Model
 				return serializer.Deserialize<TData>(jsonReader);
 		}
 
-		private void Save<TData>(string directory, string path, TData data)
+		protected virtual void Save<TData>(string directory, string path, TData data)
 		{
 			path = Path.Combine(directory, path + ".json");
 			Directory.CreateDirectory(Path.GetDirectoryName(path));

@@ -41,7 +41,11 @@ namespace Overmind.Tactics.UnityClient
 		public GameView()
 		{
 			JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
-			contentProvider = new ContentProvider(serializer, "Assets", "UserData");
+#if UNITY_EDITOR
+			contentProvider = new UnityContentProvider(serializer, "Assets/Resources", "UserData");
+#else
+			contentProvider = new UnityContentProvider(serializer, null, Application.persistentDataPath);
+#endif
 		}
 
 		public void OnBeforeSerialize() { }
