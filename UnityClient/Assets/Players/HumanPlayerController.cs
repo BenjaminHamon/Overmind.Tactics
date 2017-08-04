@@ -210,6 +210,12 @@ namespace Overmind.Tactics.UnityClient
 		{
 			ClearCurrentCommand();
 
+			if ((ability != null) && (caster.ActionPoints < ability.ActionPoints))
+			{
+				UserInterface.GameMessageView.AddMessage("Not enough action points");
+				return;
+			}
+
 			isPickingTarget = true;
 			currentAbility = ability;
 

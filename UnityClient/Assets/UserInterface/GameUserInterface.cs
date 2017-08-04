@@ -22,6 +22,7 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 		public Button SelectPreviousCharacterButton;
 		public Button SelectNextCharacterButton;
 		public AbilityPanel AbilityPanel;
+		public GameMessageView GameMessageView;
 
 		public void Update()
 		{
