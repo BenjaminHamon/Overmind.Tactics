@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Overmind.Tactics.Model.Abilities;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -13,7 +13,7 @@ namespace Overmind.Tactics.Model.Commands
 
 		[DataMember(Name = nameof(Ability))]
 		public string AbilityName;
-		public Ability Ability;
+		public IAbility Ability;
 
 		[DataMember]
 		public Vector2 Target;
@@ -25,7 +25,7 @@ namespace Overmind.Tactics.Model.Commands
 			if (Ability == null)
 				Ability = Character.CharacterClass.Abilities.Single(a => a.Name == AbilityName);
 
-			return Character.Cast(Ability, Target, state.GetAbilityTargets);
+			return Ability.Cast(state, Character, Target);
 		}
 	}
 }

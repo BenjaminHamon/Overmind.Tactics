@@ -1,5 +1,5 @@
 ﻿using Overmind.Tactics.Model;
-using Overmind.Tactics.UnityClient.Unity;
+using Overmind.Tactics.Model.Abilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,9 +60,12 @@ namespace Overmind.Tactics.UnityClient.Tests
 			character.Model.Position = new Model.Vector2(1, 0);
 			character.UpdateFromModel();
 
-			Ability ability = new Ability() { Power = 2, TargetTypes = new List<TargetType>() { TargetType.Self } };
-			character.Model.Cast(ability, ((UnityEngine.Vector2)character.transform.localPosition).ToModelVector(),
-				(castedAbility, casterPosition, targetPosition) => new List<Character>() { character.Model });
+			GameState gameState = new GameState();
+			gameState.Initialize(null, new UnityCharacterFinder(), null);
+
+			IAbility ability = new AreaAbility() { Power = 2, TargetWidth = 1, TargetHeight = 1,
+				TargetTypes = new List<TargetType>() { TargetType.Self } };
+			ability.Cast(gameState, character.Model, character.Model.Position);
 			yield return new WaitForSeconds(3);
 		}
 
@@ -73,9 +76,12 @@ namespace Overmind.Tactics.UnityClient.Tests
 			character.Model.Position = new Model.Vector2(1, 0);
 			character.UpdateFromModel();
 
-			Ability ability = new Ability() { Power = 20, TargetTypes = new List<TargetType>() { TargetType.Self } };
-			character.Model.Cast(ability, ((UnityEngine.Vector2)character.transform.localPosition).ToModelVector(),
-				(castedAbility, casterPosition, targetPosition) => new List<Character>() { character.Model });
+			GameState gameState = new GameState();
+			gameState.Initialize(null, new UnityCharacterFinder(), null);
+			
+			IAbility ability = new AreaAbility() { Power = 20, TargetWidth = 1, TargetHeight = 1,
+				TargetTypes = new List<TargetType>() { TargetType.Self } };
+			ability.Cast(gameState, character.Model, character.Model.Position);
 			yield return new WaitForSeconds(3);
 		}
 	}

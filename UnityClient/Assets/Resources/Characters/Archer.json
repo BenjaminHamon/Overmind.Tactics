@@ -9,6 +9,7 @@
 	"DefaultAbility": "RangedAttack",
 	"Abilities": [
 		{
+			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
 			"Name": "RangedAttack",
 			"Icon": "Ability_RangedAttack",
 			"Power": 20,

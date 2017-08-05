@@ -1,4 +1,5 @@
 ﻿using Overmind.Tactics.Model;
+using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.UnityClient.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Overmind.Tactics.UnityClient.Tests.UserInterface
 			{
 				CharacterClass = new CharacterClass()
 				{
-					Abilities = new List<Ability>(),
+					Abilities = new List<IAbility>(),
 				},
 			};
 			yield return new WaitForSeconds(3);
@@ -44,10 +45,10 @@ namespace Overmind.Tactics.UnityClient.Tests.UserInterface
 			{
 				CharacterClass = new CharacterClass()
 				{
-					Abilities = new List<Ability>()
+					Abilities = new List<IAbility>()
 					{
-						new Ability() { Icon = "Ability_Attack" },
-						new Ability() { Icon = "Ability_RangedAttack" },
+						new AreaAbility() { Icon = "Ability_Attack" },
+						new AreaAbility() { Icon = "Ability_RangedAttack" },
 					},
 				},
 			};

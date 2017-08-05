@@ -8,6 +8,7 @@
 
 	"Abilities": [
 		{
+			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
 			"Name": "FireBall",
 			"Icon": "Ability_FireBall",
 			"Power": 30,
@@ -18,6 +19,7 @@
 			"TargetTypes": [ "Enemy" ]
 		},
 		{
+			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
 			"Name": "FireStorm",
 			"Icon": "Ability_FireStorm",
 			"Power": 50,
@@ -28,6 +30,7 @@
 			"TargetTypes": [ "Enemy" ]
 		},
 		{
+			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
 			"Name": "FireWall",
 			"Icon": "Ability_FireWall",
 			"Power": 30,

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Overmind.Tactics.Model.Abilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -23,8 +25,8 @@ namespace Overmind.Tactics.Model
 
 		[DataMember(Name = nameof(DefaultAbility))]
 		public string DefaultAbilityName;
-		public Ability DefaultAbility { get { return Abilities.SingleOrDefault(a => a.Name == DefaultAbilityName); } }
-		[DataMember]
-		public List<Ability> Abilities;
+		public IAbility DefaultAbility { get { return Abilities.SingleOrDefault(a => a.Name == DefaultAbilityName); } }
+		[DataMember, JsonProperty(ItemTypeNameHandling = TypeNameHandling.All)]
+		public List<IAbility> Abilities;
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Overmind.Tactics.Model;
+using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.Model.Commands;
 using Overmind.Tactics.UnityClient.Navigation;
 using Overmind.Tactics.UnityClient.Unity;
@@ -21,7 +22,7 @@ namespace Overmind.Tactics.UnityClient
 		public float CameraSpeed;
 
 		private bool isPickingTarget;
-		private Ability currentAbility;
+		private IAbility currentAbility;
 		
 		[SerializeField]
 		private GameUserInterface UserInterface;
@@ -106,7 +107,7 @@ namespace Overmind.Tactics.UnityClient
 							Game.Model.ExecuteCommand(new MoveCommand() { Character = selection, CharacterId = selection.Id, Path = currentPath });
 						else
 						{
-							Ability defaultAbility = Player.Selection.Model.CharacterClass.DefaultAbility;
+							IAbility defaultAbility = Player.Selection.Model.CharacterClass.DefaultAbility;
 							if (defaultAbility != null)
 							{
 								Game.Model.ExecuteCommand(new CastAbilityCommand()
@@ -206,7 +207,7 @@ namespace Overmind.Tactics.UnityClient
 		}
 		#endregion // Path
 
-		public void PickTarget(Character caster, Ability ability)
+		public void PickTarget(Character caster, IAbility ability)
 		{
 			ClearCurrentCommand();
 
@@ -223,14 +224,15 @@ namespace Overmind.Tactics.UnityClient
 			{
 				targetIndicator.transform.localScale = new Vector2(1, 1);
 			}
-			else
+			else if (ability is AreaAbility)
 			{
-				targetIndicator.transform.localScale = new Vector2(ability.TargetWidth, ability.TargetHeight);
-				DrawAbilityRange(caster.Position.ToUnityVector(), ability.Range);
+				AreaAbility areaAbility = (AreaAbility)ability;
+				targetIndicator.transform.localScale = new Vector2(areaAbility.TargetWidth, areaAbility.TargetHeight);
+				DrawAbilityRange(caster.Position.ToUnityVector(), areaAbility.Range);
 			}
 		}
 
-		private Vector2 RoundTargetPosition(Vector2 targetPosition, Ability ability)
+		private Vector2 RoundTargetPosition(Vector2 targetPosition, IAbility ability)
 		{
 			if (ability == null)
 			{
@@ -239,9 +241,7 @@ namespace Overmind.Tactics.UnityClient
 			}
 			else
 			{
-				// Center the target area on the current tile or the between tiles depending on the area size
-				targetPosition.x = ability.TargetWidth % 2 != 0 ? Mathf.Round(targetPosition.x) : Mathf.Floor(targetPosition.x) + 0.5f;
-				targetPosition.y = ability.TargetHeight % 2 != 0 ? Mathf.Round(targetPosition.y) : Mathf.Floor(targetPosition.y) + 0.5f;
+				targetPosition = ability.GetCenter(targetPosition.ToModelVector()).ToUnityVector();
 			}
 
 			return targetPosition;

@@ -31,13 +31,13 @@ namespace Overmind.Tactics.Model
 		public bool IsRunning = false;
 		public event Action<GameState, Player> GameEnded;
 
+		public ICharacterFinder CharacterFinder { get; private set; }
 		public INavigation Navigation { get; private set; }
-		public Func<Ability, Vector2, Vector2, IEnumerable<Character>> GetAbilityTargets { get; private set; }
 
-		public void Initialize(ContentProvider contentProvider, INavigation navigation, Func<Ability, Vector2, Vector2, IEnumerable<Character>> getAbilityTargets)
+		public void Initialize(ContentProvider contentProvider, ICharacterFinder characterFinder, INavigation navigation)
 		{
+			this.CharacterFinder = characterFinder;
 			this.Navigation = navigation;
-			this.GetAbilityTargets = getAbilityTargets;
 
 			Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
 			foreach (Character character in CharacterCollection)

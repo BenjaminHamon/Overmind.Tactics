@@ -24,17 +24,40 @@ namespace Overmind.Tactics.Model
 		public Vector2 Position;
 		public event Action<Character, List<Vector2>> Moved;
 
+		private int healthPointsField;
 		[DataMember(EmitDefaultValue = false)]
-		public int HealthPoints;
+		public int HealthPoints
+		{
+			get { return healthPointsField; }
+			set
+			{
+				int oldValue = healthPointsField;
+				healthPointsField = value;
+				if (healthPointsField <= 0)
+					healthPointsField = 0;
+
+				HealthPointsChanged?.Invoke(this, oldValue, healthPointsField);
+				if (healthPointsField == 0)
+				{
+					Died?.Invoke(this);
+
+					Moved = null;
+					HealthPointsChanged = null;
+					Died = null;
+				}
+			}
+		}
+
 		public event Action<Character, int, int> HealthPointsChanged;
 		public bool IsAlive { get { return HealthPoints > 0; } }
 		public event Action<Character> Died;
+
 		[DataMember(EmitDefaultValue = false)]
 		public int ActionPoints;
 		
 		internal void Initialize()
 		{
-			HealthPoints = CharacterClass.HealthPoints;
+			healthPointsField = CharacterClass.HealthPoints;
 			ActionPoints = CharacterClass.ActionPoints;
 		}
 
@@ -65,58 +88,6 @@ namespace Overmind.Tactics.Model
 			Position = newPosition;
 			Moved?.Invoke(this, pathTravelled);
 			return true;
-		}
-
-		public bool Cast(Ability ability, Vector2 targetCenter, Func<Ability, Vector2, Vector2, IEnumerable<Character>> getAbilityTargets)
-		{
-			if ((ActionPoints < ability.ActionPoints) || ((targetCenter - Position).Norm > ability.Range))
-				return false;
-
-			List<Character> targetCollection = getAbilityTargets(ability, Position, targetCenter).Where(target => IsTargetAllowed(ability, target)).ToList();
-			if (ability.TargetRequired && (targetCollection.Any() == false))
-				return false;
-
-			foreach (Character currentTarget in targetCollection)
-				currentTarget.ApplyAbility(this, ability);
-
-			ActionPoints -= ability.ActionPoints;
-			return true;
-		}
-
-		private void ApplyAbility(Character caster, Ability ability)
-		{
-			int oldValue = HealthPoints;
-			HealthPoints -= ability.Power;
-			if (HealthPoints <= 0)
-				HealthPoints = 0;
-
-			HealthPointsChanged?.Invoke(this, oldValue, HealthPoints);
-			if (HealthPoints == 0)
-			{
-				Died?.Invoke(this);
-
-				Moved = null;
-				HealthPointsChanged = null;
-				Died = null;
-			}
-		}
-
-		private bool IsTargetAllowed(Ability ability, Character target)
-		{
-			if (ability.TargetTypes.Any() == false)
-				return false;
-			return ability.TargetTypes.All(type => IsTargetAllowed(type, target));
-		}
-
-		private bool IsTargetAllowed(TargetType type, Character target)
-		{
-			switch (type)
-			{
-				case TargetType.Self: return this == target;
-				case TargetType.Allied: return Owner == target.Owner;
-				case TargetType.Enemy: return Owner != target.Owner;
-				default: throw new Exception("[Character] Unhandled target type value: " + type);
-			}
 		}
 	}
 }

@@ -9,6 +9,7 @@
 	"DefaultAbility": "Attack",
 	"Abilities": [
 		{
+			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
 			"Name": "Attack",
 			"Icon": "Ability_Attack",
 			"Power": 20,
