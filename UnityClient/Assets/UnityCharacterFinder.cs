@@ -41,5 +41,14 @@ namespace Overmind.Tactics.UnityClient
 			return Physics2D.OverlapAreaAll(bottomLeft, topRight, layerMask)
 				.Select(target => target.GetComponentInParent<CharacterView>()?.Model).Where(target => (target != null));
 		}
+
+		public IEnumerable<Character> GetCharactersOnLine(Model.Vector2 origin, Model.Vector2 end)
+		{
+			//Debug.LogFormat("[UnityCharacterFinder] GetCharactersOnLine (Origin: {0}, End: {1})", origin, end);
+			//Debug.DrawLine(origin.ToUnityVector(), end.ToUnityVector(), Color.red, 3);
+
+			return Physics2D.LinecastAll(origin.ToUnityVector(), end.ToUnityVector(), layerMask)
+				.Select(target => target.collider.GetComponentInParent<CharacterView>()?.Model).Where(target => (target != null));
+		}
 	}
 }

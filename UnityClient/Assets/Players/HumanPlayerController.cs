@@ -111,7 +111,7 @@ namespace Overmind.Tactics.UnityClient
 									CharacterId = selection.Id,
 									Ability = defaultAbility,
 									AbilityName = defaultAbility.Name,
-									Target = abilityCastView.GetTargetPosition(hitOrigin, defaultAbility).ToModelVector(),
+									Target = abilityCastView.AdjustTargetPosition(hitOrigin, defaultAbility).ToModelVector(),
 								});
 							}
 						}

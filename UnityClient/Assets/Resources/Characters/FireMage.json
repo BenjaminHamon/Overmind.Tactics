@@ -8,14 +8,13 @@
 
 	"Abilities": [
 		{
-			"$type": "Overmind.Tactics.Model.Abilities.AreaAbility, Overmind.Tactics.Model",
+			"$type": "Overmind.Tactics.Model.Abilities.ProjectileAbility, Overmind.Tactics.Model",
 			"Name": "FireBall",
 			"Icon": "Ability_FireBall",
 			"Power": 30,
 			"ActionPoints": 1,
 			"Range": 5,
-			"TargetWidth": 1,
-			"TargetHeight": 1,
+			"TargetLimit": 1,
 			"TargetTypes": [ "Enemy" ]
 		},
 		{

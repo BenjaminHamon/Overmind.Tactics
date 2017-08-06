@@ -11,6 +11,7 @@ namespace Overmind.Tactics.Model.Abilities
 		string Name { get; }
 		string Icon { get; }
 		int ActionPoints { get; }
+		int Range { get; }
 
 		int GetRotation(Vector2 casterPosition, Vector2 targetPosition);
 		bool Cast(GameState game, Character caster, Vector2 targetCenter);

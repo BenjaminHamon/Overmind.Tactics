@@ -12,20 +12,27 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 		[SerializeField]
 		private new Camera camera;
 		[SerializeField]
-		private Transform target;
+		private Transform targetArea;
+		[SerializeField]
+		private LineRenderer targetLine;
 		[SerializeField]
 		private Transform rangeGroup;
 		[SerializeField]
 		private GameObject rangePrefab;
+		[SerializeField]
+		private Color inRangeColor;
+		[SerializeField]
+		private Color outOfRangeColor;
 
 		private Character caster;
 		private IAbility ability;
 
-		public Vector2 TargetPosition { get { return target.localPosition; } }
+		public Vector2 TargetPosition { get; private set; }
 
 		public void Change(bool enabled, Character caster, IAbility ability)
 		{
-			target.gameObject.SetActive(false);
+			targetArea.gameObject.SetActive(false);
+			targetLine.gameObject.SetActive(false);
 			ClearAbilityRange();
 
 			this.enabled = enabled;
@@ -35,35 +42,58 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 			if (enabled == false)
 				return;
 
-			if (this.ability == null)
-				target.localScale = new Vector2(1, 1);
-			else if (this.ability is AreaAbility)
+			Vector2 casterPosition = caster.Position.ToUnityVector();
+			targetArea.localScale = new Vector2(1, 1);
+			targetLine.SetPosition(0, casterPosition);
+
+			if (ability is AreaAbility)
 			{
-				AreaAbility areaAbility = (AreaAbility)this.ability;
-				target.localScale = new Vector2(areaAbility.TargetWidth, areaAbility.TargetHeight);
-				DrawAbilityRange(caster.Position.ToUnityVector(), areaAbility.Range);
+				AreaAbility areaAbility = (AreaAbility)ability;
+				targetArea.localScale = new Vector2(areaAbility.TargetWidth, areaAbility.TargetHeight);
+				DrawAbilityRange(casterPosition, ability.Range);
 			}
+			else if (ability is ProjectileAbility)
+				DrawAbilityRange(casterPosition, ability.Range);
 		}
 
 		public void Update()
 		{
 			if (EventSystem.current.IsPointerOverGameObject())
 			{
-				target.gameObject.SetActive(false);
+				targetArea.gameObject.SetActive(false);
+				targetLine.gameObject.SetActive(false);
 				return;
 			}
 
-			Vector2 targetPosition = GetTargetPosition(camera.ScreenToWorldPoint(Input.mousePosition), ability);
-			if ((Vector2)target.localPosition != targetPosition)
+			Vector2 targetPosition = AdjustTargetPosition(camera.ScreenToWorldPoint(Input.mousePosition), ability);
+			if (this.TargetPosition != targetPosition)
 			{
-				target.localPosition = targetPosition;
-				target.localEulerAngles = new Vector3(0, 0, ability == null ? 0 : ability.GetRotation(caster.Position, targetPosition.ToModelVector()));
+				targetArea.localPosition = targetPosition;
+				targetArea.localEulerAngles = new Vector3(0, 0, ability == null ? 0 : ability.GetRotation(caster.Position, targetPosition.ToModelVector()));
+
+				if (ability is ProjectileAbility)
+				{
+					targetLine.SetPosition(1, targetPosition);
+					targetLine.gameObject.SetActive(true);
+				}
+
+				if ((caster.Position - targetPosition.ToModelVector()).Norm <= ability.Range)
+				{
+					targetArea.GetComponent<SpriteRenderer>().color = inRangeColor;
+				}
+				else
+				{
+					targetArea.GetComponent<SpriteRenderer>().color = outOfRangeColor;
+					targetLine.gameObject.SetActive(false);
+				}
+
+				this.TargetPosition = targetPosition;
 			}
 
-			target.gameObject.SetActive(true);
+			targetArea.gameObject.SetActive(true);
 		}
 
-		public Vector2 GetTargetPosition(Vector2 targetPosition, IAbility ability)
+		public Vector2 AdjustTargetPosition(Vector2 targetPosition, IAbility ability)
 		{
 			if (ability != null)
 			{
