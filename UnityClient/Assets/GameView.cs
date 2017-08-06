@@ -186,17 +186,18 @@ namespace Overmind.Tactics.UnityClient
 			ResetScene();
 			
 			GameObject mapPrefab = Resources.Load<GameObject>("Maps/" + Model.ActiveState.Map);
-			GameObject mapObject = Instantiate(mapPrefab, mapGroup);
+			GameObject mapObject = GameObjectExtensions.Instantiate(mapPrefab, mapGroup);
 			mapObject.name = Model.ActiveState.Map;
 
 			foreach (Player playerModel in Model.ActiveState.PlayerCollection)
 			{
-				PlayerView playerView = Instantiate(playerPrefab, transform).GetComponent<PlayerView>();
+				PlayerView playerView = GameObjectExtensions.Instantiate(playerPrefab, transform).GetComponent<PlayerView>();
 				playerView.Model = playerModel;
 				playerView.UpdateFromModel();
 				playerCollection.Add(playerView);
 				
-				HumanPlayerController playerController = Instantiate(humanPlayerControllerPrefab, playerView.transform).GetComponent<HumanPlayerController>();
+				HumanPlayerController playerController
+					= GameObjectExtensions.Instantiate(humanPlayerControllerPrefab, playerView.transform).GetComponent<HumanPlayerController>();
 				playerController.Game = this;
 				playerController.Player = playerView;
 
@@ -206,7 +207,7 @@ namespace Overmind.Tactics.UnityClient
 
 			foreach (Character characterModel in Model.ActiveState.CharacterCollection)
 			{
-				CharacterView characterView = Instantiate(characterPrefab, characterGroup).GetComponent<CharacterView>();
+				CharacterView characterView = GameObjectExtensions.Instantiate(characterPrefab, characterGroup).GetComponent<CharacterView>();
 				characterView.Model = characterModel;
 				characterView.UpdateFromModel();
 				CharacterCollection.Add(characterView);
