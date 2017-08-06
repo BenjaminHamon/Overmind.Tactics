@@ -26,13 +26,8 @@ namespace Overmind.Tactics.UnityClient
 		
 		[SerializeField]
 		private GameUserInterface UserInterface;
-		
 		[SerializeField]
-		private GameObject targetIndicator;
-		[SerializeField]
-		private GameObject abilityRangeIndicatorPrefab;
-		[SerializeField]
-		private Transform abilityRangeIndicatorGroup;
+		private AbilityCastView abilityCastView;
 
 		public void Start()
 		{
@@ -43,6 +38,8 @@ namespace Overmind.Tactics.UnityClient
 			UserInterface.SelectPreviousCharacterButton.onClick.AddListener(() => Player.SelectPrevious());
 			UserInterface.SelectNextCharacterButton.onClick.AddListener(() => Player.SelectNext());
 			UserInterface.AbilityPanel.AbilityButtonClick += PickTarget;
+
+			Player.Model.TurnEnded += _ => ClearCurrentCommand();
 		}
 
 		public void Update()
@@ -75,8 +72,6 @@ namespace Overmind.Tactics.UnityClient
 
 		private void UpdateForDefault()
 		{
-			targetIndicator.SetActive(false);
-			
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
@@ -116,7 +111,7 @@ namespace Overmind.Tactics.UnityClient
 									CharacterId = selection.Id,
 									Ability = defaultAbility,
 									AbilityName = defaultAbility.Name,
-									Target = RoundTargetPosition(hitOrigin, defaultAbility).ToModelVector(),
+									Target = abilityCastView.GetTargetPosition(hitOrigin, defaultAbility).ToModelVector(),
 								});
 							}
 						}
@@ -130,33 +125,39 @@ namespace Overmind.Tactics.UnityClient
 		private void UpdateForCommand()
 		{
 			if (EventSystem.current.IsPointerOverGameObject())
-			{
-				targetIndicator.SetActive(false);
 				return;
-			}
 
 			Character selection = Player.Selection.Model;
-			Vector2 targetPosition = RoundTargetPosition(Camera.ScreenToWorldPoint(Input.mousePosition), currentAbility);
-			if ((Vector2)targetIndicator.transform.localPosition != targetPosition)
-			{
-				targetIndicator.transform.localPosition = targetPosition;
-				targetIndicator.transform.localEulerAngles = new Vector3(0, 0, currentAbility.GetRotation(selection.Position, targetPosition.ToModelVector()));
-			}
-			targetIndicator.SetActive(true);
+			Vector2 targetPosition = abilityCastView.TargetPosition;
 
 			if (currentAbility == null)
 				ShowPath(selection.Position, targetPosition.ToModelVector());
 
 			if (Input.GetMouseButtonUp(0))
 			{
-				Game.Model.ExecuteCommand(new CastAbilityCommand()
+				IGameCommand command;
+				if (currentAbility == null)
 				{
-					Character = selection,
-					CharacterId = selection.Id,
-					Ability = currentAbility,
-					AbilityName = currentAbility.Name,
-					Target = targetPosition.ToModelVector(),
-				});
+					command = new MoveCommand()
+					{
+						Character = selection,
+						CharacterId = selection.Id,
+						Path = currentPath,
+					};
+				}
+				else
+				{
+					command = new CastAbilityCommand()
+					{
+						Character = selection,
+						CharacterId = selection.Id,
+						Ability = currentAbility,
+						AbilityName = currentAbility.Name,
+						Target = targetPosition.ToModelVector(),
+					};
+				}
+
+				Game.Model.ExecuteCommand(command);
 				ClearCurrentCommand();
 			}
 
@@ -164,12 +165,27 @@ namespace Overmind.Tactics.UnityClient
 				ClearCurrentCommand();
 		}
 
+		private void PickTarget(Character caster, IAbility ability)
+		{
+			ClearCurrentCommand();
+
+			if ((ability != null) && (caster.ActionPoints < ability.ActionPoints))
+			{
+				UserInterface.GameMessageView.AddMessage("Not enough action points");
+				return;
+			}
+
+			isPickingTarget = true;
+			currentAbility = ability;
+			abilityCastView.Change(true, Player.Selection.Model, ability);
+		}
+
 		private void ClearCurrentCommand()
 		{
 			isPickingTarget = false;
 			currentAbility = null;
+			abilityCastView.Change(false, null, null);
 			ClearPath();
-			ClearAbilityRange();
 		}
 
 		#region Path
@@ -206,76 +222,5 @@ namespace Overmind.Tactics.UnityClient
 			currentPath = null;
 		}
 		#endregion // Path
-
-		public void PickTarget(Character caster, IAbility ability)
-		{
-			ClearCurrentCommand();
-
-			if ((ability != null) && (caster.ActionPoints < ability.ActionPoints))
-			{
-				UserInterface.GameMessageView.AddMessage("Not enough action points");
-				return;
-			}
-
-			isPickingTarget = true;
-			currentAbility = ability;
-
-			if (ability == null)
-			{
-				targetIndicator.transform.localScale = new Vector2(1, 1);
-			}
-			else if (ability is AreaAbility)
-			{
-				AreaAbility areaAbility = (AreaAbility)ability;
-				targetIndicator.transform.localScale = new Vector2(areaAbility.TargetWidth, areaAbility.TargetHeight);
-				DrawAbilityRange(caster.Position.ToUnityVector(), areaAbility.Range);
-			}
-		}
-
-		private Vector2 RoundTargetPosition(Vector2 targetPosition, IAbility ability)
-		{
-			if (ability == null)
-			{
-				targetPosition.x = Mathf.Round(targetPosition.x);
-				targetPosition.y = Mathf.Round(targetPosition.y);
-			}
-			else
-			{
-				targetPosition = ability.GetCenter(targetPosition.ToModelVector()).ToUnityVector();
-			}
-
-			return targetPosition;
-		}
-
-		// Draw the ability range as a tiled circle
-		private void DrawAbilityRange(Vector2 origin, int range)
-		{
-			Vector2 currentPosition = new Vector2(1, -range);
-			while (currentPosition.y <= range)
-			{
-				Instantiate(abilityRangeIndicatorPrefab, new Vector2(0, currentPosition.y), Quaternion.identity, abilityRangeIndicatorGroup);
-
-				currentPosition.x = 1;
-				while (currentPosition.sqrMagnitude <= range * range)
-				{
-					Instantiate(abilityRangeIndicatorPrefab, currentPosition, Quaternion.identity, abilityRangeIndicatorGroup);
-					Instantiate(abilityRangeIndicatorPrefab, new Vector2(-currentPosition.x, currentPosition.y), Quaternion.identity, abilityRangeIndicatorGroup);
-					currentPosition.x += 1;
-				}
-
-				currentPosition.y += 1;
-			}
-
-			abilityRangeIndicatorGroup.transform.localPosition = origin;
-		}
-
-		private void ClearAbilityRange()
-		{
-			List<GameObject> children = abilityRangeIndicatorGroup.Cast<Transform>().Select(t => t.gameObject).ToList();
-			foreach (GameObject child in children)
-				Destroy(child);
-
-			abilityRangeIndicatorGroup.transform.localPosition = Vector3.zero;
-		}
 	}
 }

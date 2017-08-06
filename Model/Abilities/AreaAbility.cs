@@ -19,13 +19,6 @@ namespace Overmind.Tactics.Model.Abilities
 		public bool TargetRequired;
 		public List<TargetType> TargetTypes;
 
-		public Vector2 GetCenter(Vector2 target)
-		{
-			return new Vector2(
-				TargetWidth % 2 != 0 ? Convert.ToSingle(Math.Round(target.X)) : Convert.ToSingle(Math.Floor(target.X)) + 0.5f,
-				TargetHeight % 2 != 0 ? Convert.ToSingle(Math.Round(target.Y)) : Convert.ToSingle(Math.Floor(target.Y)) + 0.5f);
-		}
-
 		public int GetRotation(Vector2 casterPosition, Vector2 targetPosition)
 		{
 			Vector2 targetRelativeToCaster = targetPosition - casterPosition;

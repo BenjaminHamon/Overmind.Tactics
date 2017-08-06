@@ -99,6 +99,12 @@ namespace Overmind.Tactics.UnityClient
 				ActivePlayer.Enable();
 		}
 
+		/// <summary>Gets the exact tile position from a position in the world.</summary>
+		public static UnityEngine.Vector2 GetTilePosition(UnityEngine.Vector2 position)
+		{
+			return new UnityEngine.Vector2(Mathf.Round(position.x), Mathf.Round(position.y));
+		}
+
 		// The editor maintains several game states:
 		//   ActiveState, the current game state according to the underlying game model
 		//   SaveState, a copy of the initial game state with a command history tracking changes to get to the active state
