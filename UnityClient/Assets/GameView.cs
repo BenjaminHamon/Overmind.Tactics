@@ -23,7 +23,10 @@ namespace Overmind.Tactics.UnityClient
 
 		[SerializeField]
 		private GameObject humanPlayerControllerPrefab;
-		
+
+		[SerializeField]
+		private LayerMask targetLayerMask;
+
 		public string GameScenarioPath;
 		public string GameSavePath;
 		public Game Model;
@@ -135,7 +138,7 @@ namespace Overmind.Tactics.UnityClient
 
 			Debug.LogFormat(this, "[GameView] Loaded from {0}", path);
 
-			Model.ActiveState.Initialize(contentProvider, new UnityCharacterFinder(), new AstarNavigation(IsTileAccessible));
+			Model.ActiveState.Initialize(contentProvider, new UnityCharacterFinder(targetLayerMask), new AstarNavigation(IsTileAccessible));
 			ApplyModelToScene();
 		}
 
@@ -172,7 +175,7 @@ namespace Overmind.Tactics.UnityClient
 			this.playerCollection = playerViewCollection;
 			this.CharacterCollection = characterViewCollection;
 			
-			Model.ActiveState.Initialize(contentProvider, new UnityCharacterFinder(), new AstarNavigation(IsTileAccessible));
+			Model.ActiveState.Initialize(contentProvider, new UnityCharacterFinder(targetLayerMask), new AstarNavigation(IsTileAccessible));
 			foreach (PlayerView playerView in playerViewCollection)
 				playerView.UpdateFromModel();
 			foreach (CharacterView characterView in characterViewCollection)

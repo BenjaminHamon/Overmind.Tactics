@@ -10,6 +10,8 @@ namespace Overmind.Tactics.UnityClient.Tests
 	{
 		[SerializeField]
 		private CharacterView character;
+		[SerializeField]
+		private LayerMask targetLayerMask;
 
 		public void Start()
 		{
@@ -61,7 +63,7 @@ namespace Overmind.Tactics.UnityClient.Tests
 			character.UpdateFromModel();
 
 			GameState gameState = new GameState();
-			gameState.Initialize(null, new UnityCharacterFinder(), null);
+			gameState.Initialize(null, new UnityCharacterFinder(targetLayerMask), null);
 
 			IAbility ability = new AreaAbility() { Power = 2, TargetWidth = 1, TargetHeight = 1,
 				TargetTypes = new List<TargetType>() { TargetType.Self } };
@@ -77,7 +79,7 @@ namespace Overmind.Tactics.UnityClient.Tests
 			character.UpdateFromModel();
 
 			GameState gameState = new GameState();
-			gameState.Initialize(null, new UnityCharacterFinder(), null);
+			gameState.Initialize(null, new UnityCharacterFinder(targetLayerMask), null);
 			
 			IAbility ability = new AreaAbility() { Power = 20, TargetWidth = 1, TargetHeight = 1,
 				TargetTypes = new List<TargetType>() { TargetType.Self } };

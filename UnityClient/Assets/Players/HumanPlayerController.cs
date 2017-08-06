@@ -79,7 +79,7 @@ namespace Overmind.Tactics.UnityClient
 			{
 				Vector2 hitOrigin = Camera.ScreenToWorldPoint(Input.mousePosition);
 				RaycastHit2D hit = Physics2D.Raycast(hitOrigin, Vector2.zero);
-				Player.Selection = hit.collider != null ? hit.collider.GetComponent<CharacterView>() : null;
+				Player.Selection = hit.collider != null ? hit.collider.GetComponentInParent<CharacterView>() : null;
 			}
 
 			if ((Player.Selection != null) && (Player.Selection.Model.Owner == Player.Model))
@@ -96,7 +96,7 @@ namespace Overmind.Tactics.UnityClient
 					if (hit.collider != null)
 					{
 						Character selection = Player.Selection.Model;
-						CharacterView target = hit.collider.GetComponent<CharacterView>();
+						CharacterView target = hit.collider.GetComponentInParent<CharacterView>();
 
 						if (target == null)
 							Game.Model.ExecuteCommand(new MoveCommand() { Character = selection, CharacterId = selection.Id, Path = currentPath });
