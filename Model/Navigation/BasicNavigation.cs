@@ -14,14 +14,12 @@ namespace Overmind.Tactics.Model.Navigation
 
 		public List<Vector2> FindPath(Vector2 start, Vector2 end)
 		{
-			start = new Vector2(Convert.ToSingle(Math.Round(start.X)), Convert.ToSingle(Math.Round(start.Y)));
-			end = new Vector2(Convert.ToSingle(Math.Round(end.X)), Convert.ToSingle(Math.Round(end.Y)));
-
 			List<Vector2> path = new List<Vector2>();
 			Vector2 current = start;
 
 			// Try to move towards the end point in a direct line
 			// Iterate to find each unit step to follow the direct line.
+			int loopIndex = 0;
 			while (current != end)
 			{
 				Vector2 bestNext = Vector2.Zero;
@@ -44,20 +42,16 @@ namespace Overmind.Tactics.Model.Navigation
 					}
 				}
 
+				// Found no path to destination
 				if (bestNext == Vector2.Zero)
-				{
-					//Debug.LogWarning("[Navigation] FindPath failed: no next move");
-					break;
-				}
+					return new List<Vector2>();
 
 				path.Add(bestNext);
 				current = bestNext;
 
-				if (path.Count > 100)
-				{
-					//Debug.LogWarning("[Navigation] FindPath failed: path too long");
-					break;
-				}
+				loopIndex += 1;
+				if (loopIndex > 1000)
+					throw new TimeoutException("[BasicNavigation] FindPath timed out");
 			}
 
 			return path;

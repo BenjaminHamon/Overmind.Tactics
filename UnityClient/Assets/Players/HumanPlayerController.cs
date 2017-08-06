@@ -197,13 +197,16 @@ namespace Overmind.Tactics.UnityClient
 
 		private void ShowPath(Model.Vector2 start, Model.Vector2 end)
 		{
-			start = new Model.Vector2(Convert.ToSingle(Math.Round(start.X)), Convert.ToSingle(Math.Round(start.Y)));
-			end = new Model.Vector2(Convert.ToSingle(Math.Round(end.X)), Convert.ToSingle(Math.Round(end.Y)));
+			start = new Model.Vector2(Mathf.Round(start.X), Mathf.Round(start.Y));
+			end = new Model.Vector2(Mathf.Round(end.X),Mathf.Round(end.Y));
 
 			if ((currentPath == null) || (currentPathStart != start) || (currentPathEnd != end))
 			{
 				// Debug.LogFormat(this, "[HumanPlayerController] FindPath (Start: {0}, End: {1})", start, end);
-				currentPath = Game.Model.ActiveState.Navigation.FindPath(start, end);
+				currentPath = new List<Model.Vector2>();
+				try { currentPath = Game.Model.ActiveState.Navigation.FindPath(start, end); }
+				catch (TimeoutException exception) { Debug.LogWarning(exception); }
+				
 				currentPathStart = start;
 				currentPathEnd = end;
 

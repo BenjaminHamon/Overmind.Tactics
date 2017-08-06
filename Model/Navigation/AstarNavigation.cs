@@ -15,9 +15,6 @@ namespace Overmind.Tactics.Model.Navigation
 
 		public List<Vector2> FindPath(Vector2 start, Vector2 end)
 		{
-			start = new Vector2(Convert.ToSingle(Math.Round(start.X)), Convert.ToSingle(Math.Round(start.Y)));
-			end = new Vector2(Convert.ToSingle(Math.Round(end.X)), Convert.ToSingle(Math.Round(end.Y)));
-
 			if (start == end)
 				return new List<Vector2>();
 
@@ -72,17 +69,12 @@ namespace Overmind.Tactics.Model.Navigation
 				currentNode = knownNodes.Where(n => (n.Explored == false) && n.Accessible).OrderBy(n => n.DirectDistanceToDestination).FirstOrDefault();
 				loopIndex += 1;
 				if (loopIndex > 1000)
-				{
-					//Debug.LogWarning("[Navigation] FindPath failed: took too long");
-					break;
-				}
+					throw new TimeoutException("[BasicNavigation] FindPath timed out");
 			}
 
+			// Found no path to destination
 			if (endNode == null)
-			{
-				//Debug.LogWarning("[Navigation] FindPath failed: could not reach destination");
 				return new List<Vector2>();
-			}
 
 			List<Vector2> path = new List<Vector2>();
 			currentNode = endNode;
