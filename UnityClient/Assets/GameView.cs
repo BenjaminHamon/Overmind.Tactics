@@ -155,7 +155,8 @@ namespace Overmind.Tactics.UnityClient
 		{
 			GameState gameState = new GameState();
 
-			gameState.Map = mapGroup.GetChild(0).name;
+			if (mapGroup.childCount > 0)
+				gameState.Map = mapGroup.GetChild(0).name;
 
 			List<PlayerView> playerViewCollection = transform.GetComponentsInChildren<PlayerView>(true).ToList();
 			gameState.PlayerCollection = playerViewCollection.Select(p => p.Model).ToList();
