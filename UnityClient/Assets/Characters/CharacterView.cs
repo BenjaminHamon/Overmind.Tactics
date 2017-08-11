@@ -1,4 +1,5 @@
 using Overmind.Tactics.Model;
+using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.UnityClient.Unity;
 using System;
 using System.Collections;
@@ -18,6 +19,8 @@ namespace Overmind.Tactics.UnityClient
 		private Transform healthBar;
 		[SerializeField]
 		private GameObject statusTextPrefab;
+		[SerializeField]
+		private GameObject projectilePrefab;
 
 		public void UpdateFromModel()
 		{
@@ -31,6 +34,7 @@ namespace Overmind.Tactics.UnityClient
 		{
 			Model.Moved += Move;
 			Model.HealthPointsChanged += OnHealthPointsChanged;
+			Model.AbilityCast += OnAbilityCast;
 			Model.Died += _ => Destroy(gameObject);
 		}
 
@@ -72,6 +76,18 @@ namespace Overmind.Tactics.UnityClient
 			float valueChange = newValue - oldValue;
 			statusText.TextElement.text = valueChange.ToString();
 			statusText.TextElement.color = valueChange >= 0 ? Color.green : Color.red;
+		}
+
+		private void OnAbilityCast(Character model, IAbility ability, Model.Vector2 target)
+		{
+			if (ability is ProjectileAbility)
+			{
+				ProjectileView projectile = GameObjectExtensions.Instantiate(projectilePrefab, transform.parent).GetComponent<ProjectileView>();
+				projectile.Animator.runtimeAnimatorController
+					= UnityContentProvider.LoadAsset<RuntimeAnimatorController>("Abilities/Ability_" + ability.Name + "_Projectile");
+				projectile.transform.localPosition = model.Position.ToUnityVector();
+				projectile.Target = target.ToUnityVector();
+			}
 		}
 	}
 }

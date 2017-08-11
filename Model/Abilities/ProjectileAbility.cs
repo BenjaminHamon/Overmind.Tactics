@@ -21,7 +21,7 @@ namespace Overmind.Tactics.Model.Abilities
 
 		public bool Cast(GameState game, Character caster, Vector2 targetCenter)
 		{
-			if ((caster.ActionPoints < ActionPoints) || ((targetCenter - caster.Position).Norm > Range))
+			if ((targetCenter - caster.Position).Norm > Range)
 				return false;
 
 			IEnumerable<Character> targetCollection = game.CharacterFinder.GetCharactersOnLine(caster.Position, targetCenter)
@@ -32,7 +32,6 @@ namespace Overmind.Tactics.Model.Abilities
 			foreach (Character currentTarget in targetCollection)
 				Apply(currentTarget);
 			
-			caster.ActionPoints -= ActionPoints;
 			return true;
 		}
 

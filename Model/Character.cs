@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overmind.Tactics.Model.Abilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -43,6 +44,7 @@ namespace Overmind.Tactics.Model
 
 					Moved = null;
 					HealthPointsChanged = null;
+					AbilityCast = null;
 					Died = null;
 				}
 			}
@@ -88,6 +90,23 @@ namespace Overmind.Tactics.Model
 			Position = newPosition;
 			Moved?.Invoke(this, pathTravelled);
 			return true;
+		}
+
+		public event Action<Character, IAbility, Vector2> AbilityCast;
+
+		public bool Cast(GameState game, IAbility ability, Vector2 targetPosition)
+		{
+			if (ActionPoints < ability.ActionPoints)
+				return false;
+
+			bool didCast = ability.Cast(game, this, targetPosition);
+			if (didCast)
+			{
+				ActionPoints -= ability.ActionPoints;
+				AbilityCast?.Invoke(this, ability, targetPosition);
+			}
+
+			return didCast;
 		}
 	}
 }

@@ -12,12 +12,17 @@ namespace Overmind.Tactics.UnityClient
 			: base(serializer, contentDirectory, userDirectory)
 		{ }
 
-		protected override TData LoadContent<TData>(string path)
+		public static TAsset LoadAsset<TAsset>(string path) where TAsset : UnityEngine.Object
 		{
-			TextAsset asset = Resources.Load<TextAsset>(path);
+			TAsset asset = Resources.Load<TAsset>(path);
 			if (asset == null)
 				throw new FileNotFoundException(String.Format("[UnityContentProvider] Resource not found {0}", path), path);
+			return asset;
+		}
 
+		protected override TData LoadContent<TData>(string path)
+		{
+			TextAsset asset = LoadAsset<TextAsset>(path);
 			using (StringReader stringReader = new StringReader(asset.text))
 			using (JsonReader jsonReader = new JsonTextReader(stringReader))
 				return serializer.Deserialize<TData>(jsonReader);

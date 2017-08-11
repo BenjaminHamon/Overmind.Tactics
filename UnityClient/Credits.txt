@@ -17,3 +17,7 @@ Overmind.Tactics use licensed assets from:
 	Delapouite, http://delapouite.com
 	Lorc, http://lorcblog.blogspot.com
 	Carl Olsen, https://twitter.com/unstoppableCarl
+
+- Game developer studio by Robert Brooks
+	Game developer studio standard licence
+	https://www.gamedeveloperstudio.com/license.php
