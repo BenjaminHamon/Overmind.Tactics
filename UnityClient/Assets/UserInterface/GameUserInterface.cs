@@ -8,8 +8,7 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 	public class GameUserInterface : MonoBehaviour
 	{
 		public PlayerView Player;
-		[NonSerialized]
-		public Game Game;
+		public GameModel Game { get; set; }
 
 		[SerializeField]
 		private Text activePlayerText;
@@ -26,8 +25,8 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 
 		public void Update()
 		{
-			activePlayerText.text = Game?.ActiveState.ActivePlayer?.Name;
-			turnText.text = Game != null ? "Turn " + Game.ActiveState.Turn : null;
+			activePlayerText.text = Game?.ActivePlayer?.Name;
+			turnText.text = Game != null ? "Turn " + Game.Turn : null;
 
 			characterPanel.gameObject.SetActive(Player?.Selection != null);
 			characterPanel.Character = Player?.Selection?.Model;

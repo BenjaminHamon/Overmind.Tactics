@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Overmind.Tactics.Data;
 
 namespace Overmind.Tactics.Model.Abilities
 {
@@ -14,6 +10,6 @@ namespace Overmind.Tactics.Model.Abilities
 		int Range { get; }
 
 		int GetRotation(Vector2 casterPosition, Vector2 targetPosition);
-		bool Cast(GameState game, Character caster, Vector2 targetCenter);
+		bool Cast(ICharacterFinder characterFinder, CharacterModel caster, Vector2 targetCenter);
 	}
 }

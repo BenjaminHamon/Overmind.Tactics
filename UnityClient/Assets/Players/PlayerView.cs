@@ -8,7 +8,7 @@ namespace Overmind.Tactics.UnityClient
 {
 	public class PlayerView : MonoBehaviour
 	{
-		public Player Model;
+		public PlayerModel Model;
 		public string PlayerName { get { return Model.Name; } }
 
 		public GameObject LocalController;
@@ -49,6 +49,8 @@ namespace Overmind.Tactics.UnityClient
 
 		public void Start()
 		{
+			UpdateFromModel();
+
 			Model.TurnStarted += _ => Enable();
 			Model.TurnEnded += _ => Disable();
 		}

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Overmind.Tactics.Model.Abilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -8,7 +7,6 @@ using System.Runtime.Serialization;
 namespace Overmind.Tactics.Model
 {
 	[DataContract]
-	[Serializable]
 	public class CharacterClass
 	{
 		[DataMember]
@@ -27,6 +25,6 @@ namespace Overmind.Tactics.Model
 		public string DefaultAbilityName;
 		public IAbility DefaultAbility { get { return Abilities.SingleOrDefault(a => a.Name == DefaultAbilityName); } }
 		[DataMember, JsonProperty(ItemTypeNameHandling = TypeNameHandling.All)]
-		public List<IAbility> Abilities;
+		public List<IAbility> Abilities = new List<IAbility>();
 	}
 }

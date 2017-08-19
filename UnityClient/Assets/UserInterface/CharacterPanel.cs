@@ -7,8 +7,7 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 {
 	public class CharacterPanel : MonoBehaviour
 	{
-		[NonSerialized]
-		public Character Character;
+		public CharacterModel Character { get; set; }
 
 		[SerializeField]
 		private Text NameText;

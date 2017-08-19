@@ -15,7 +15,7 @@
   "CharacterCollection": [
     {
       "Id": "4e4a2e8e-0974-4fd8-b23f-2da316669dc9",
-      "OwnerId": "8d35b122-ea31-425f-a200-9dd8411903ca",
+      "Owner": "8d35b122-ea31-425f-a200-9dd8411903ca",
       "CharacterClass": "Warrior",
       "Position": {
         "X": 0.0,
@@ -24,7 +24,7 @@
     },
     {
       "Id": "60ba6976-e41b-47d0-972d-f07d7caa7aae",
-      "OwnerId": "8d35b122-ea31-425f-a200-9dd8411903ca",
+      "Owner": "8d35b122-ea31-425f-a200-9dd8411903ca",
       "CharacterClass": "FireMage",
       "Position": {
         "X": 1.0,
@@ -33,7 +33,7 @@
     },
     {
       "Id": "b7562021-3d72-42bf-9602-dc45e563ed05",
-      "OwnerId": "8d35b122-ea31-425f-a200-9dd8411903ca",
+      "Owner": "8d35b122-ea31-425f-a200-9dd8411903ca",
       "CharacterClass": "Archer",
       "Position": {
         "X": 0.0,
@@ -42,7 +42,7 @@
     },
     {
       "Id": "85acc46f-096d-4285-a9a2-ec270cd23f73",
-      "OwnerId": "8f5beff3-a379-4567-95d8-751d25cc2d1d",
+      "Owner": "8f5beff3-a379-4567-95d8-751d25cc2d1d",
       "CharacterClass": "Warrior",
       "Position": {
         "X": -2.0,
@@ -51,7 +51,7 @@
     },
     {
       "Id": "e7b6271c-aba9-40c7-837b-24cd74c33578",
-      "OwnerId": "8f5beff3-a379-4567-95d8-751d25cc2d1d",
+      "Owner": "8f5beff3-a379-4567-95d8-751d25cc2d1d",
       "CharacterClass": "Warrior",
       "Position": {
         "X": -1.0,

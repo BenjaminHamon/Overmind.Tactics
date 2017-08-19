@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overmind.Tactics.Data;
+using System;
 using System.Collections.Generic;
 
 namespace Overmind.Tactics.Model.Navigation

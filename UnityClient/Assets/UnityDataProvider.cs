@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Overmind.Tactics.UnityClient
 {
-	public class UnityContentProvider : ContentProvider
+	public class UnityDataProvider : GameDataProvider
 	{
-		public UnityContentProvider(JsonSerializer serializer, string contentDirectory, string userDirectory)
+		public UnityDataProvider(JsonSerializer serializer, string contentDirectory, string userDirectory)
 			: base(serializer, contentDirectory, userDirectory)
 		{ }
 
@@ -16,7 +16,7 @@ namespace Overmind.Tactics.UnityClient
 		{
 			TAsset asset = Resources.Load<TAsset>(path);
 			if (asset == null)
-				throw new FileNotFoundException(String.Format("[UnityContentProvider] Resource not found {0}", path), path);
+				throw new FileNotFoundException(String.Format("[UnityDataProvider] Resource not found {0}", path), path);
 			return asset;
 		}
 
@@ -31,7 +31,7 @@ namespace Overmind.Tactics.UnityClient
 		protected override void SaveContent<TData>(string path, TData data)
 		{
 			if (Application.isEditor == false)
-				throw new InvalidOperationException(String.Format("[UnityContentProvider] Cannot save content when running outside the editor (Path: {0})", path));
+				throw new InvalidOperationException(String.Format("[UnityDataProvider] Cannot save content when running outside the editor (Path: {0})", path));
 			
 			base.SaveContent(path, data);
 		}

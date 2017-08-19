@@ -1,4 +1,5 @@
-﻿using Overmind.Tactics.Model;
+﻿using Overmind.Tactics.Data;
+using Overmind.Tactics.Model;
 using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.UnityClient.UserInterface;
 using System.Collections;
@@ -32,26 +33,19 @@ namespace Overmind.Tactics.UnityClient.Tests.UserInterface
 			abilityPanel.Character = null;
 			yield return new WaitForSeconds(1);
 
-			abilityPanel.Character = new Character()
-			{
-				CharacterClass = new CharacterClass()
-				{
-					Abilities = new List<IAbility>(),
-				},
-			};
+			CharacterClass characterClass = new CharacterClass() { Abilities = new List<IAbility>() };
+			abilityPanel.Character = new CharacterModel(new CharacterData(), characterClass, null, false);
 			yield return new WaitForSeconds(3);
 
-			abilityPanel.Character = new Character()
+			characterClass = new CharacterClass()
 			{
-				CharacterClass = new CharacterClass()
+				Abilities = new List<IAbility>()
 				{
-					Abilities = new List<IAbility>()
-					{
-						new AreaAbility() { Icon = "Ability_Attack" },
-						new AreaAbility() { Icon = "Ability_RangedAttack" },
-					},
+					new AreaAbility() { Icon = "Ability_Attack" },
+					new AreaAbility() { Icon = "Ability_RangedAttack" },
 				},
 			};
+			abilityPanel.Character = new CharacterModel(new CharacterData(), characterClass, null, false);
 			yield return new WaitForSeconds(3);
 
 			abilityPanel.Character = null;

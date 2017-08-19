@@ -1,7 +1,9 @@
-﻿namespace Overmind.Tactics.Model.Commands
+﻿using Overmind.Tactics.Data;
+
+namespace Overmind.Tactics.Model.Commands
 {
-	public interface IGameCommand
+	public interface IGameCommand : IGameCommandData
 	{
-		bool TryExecute(GameState state);
+		bool TryExecute(GameModel state);
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Overmind.Tactics.Model
+namespace Overmind.Tactics.Data
 {
 	[DataContract]
 	[Serializable]

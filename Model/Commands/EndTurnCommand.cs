@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Overmind.Tactics.Model.Commands
@@ -9,9 +8,9 @@ namespace Overmind.Tactics.Model.Commands
 	{
 		[DataMember(Name = nameof(Player))]
 		public string PlayerId;
-		public Player Player;
+		public PlayerModel Player;
 
-		public bool TryExecute(GameState state)
+		public bool TryExecute(GameModel state)
 		{
 			if (Player == null)
 				Player = state.PlayerCollection.Single(p => p.Id == PlayerId);

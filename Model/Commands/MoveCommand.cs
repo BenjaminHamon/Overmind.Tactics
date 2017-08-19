@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Overmind.Tactics.Data;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Overmind.Tactics.Model.Commands
 {
@@ -10,12 +10,12 @@ namespace Overmind.Tactics.Model.Commands
 	{
 		[DataMember(Name = nameof(Character))]
 		public string CharacterId;
-		public Character Character;
+		public CharacterModel Character;
 
 		[DataMember]
 		public List<Vector2> Path;
 
-		public bool TryExecute(GameState state)
+		public bool TryExecute(GameModel state)
 		{
 			if (Character == null)
 				Character = state.CharacterCollection.Single(c => c.Id == CharacterId);

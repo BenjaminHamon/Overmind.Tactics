@@ -1,4 +1,5 @@
-﻿using Overmind.Tactics.Model.Abilities;
+﻿using Overmind.Tactics.Data;
+using Overmind.Tactics.Model.Abilities;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -9,7 +10,7 @@ namespace Overmind.Tactics.Model.Commands
 	{
 		[DataMember(Name = nameof(Character))]
 		public string CharacterId;
-		public Character Character;
+		public CharacterModel Character;
 
 		[DataMember(Name = nameof(Ability))]
 		public string AbilityName;
@@ -18,14 +19,14 @@ namespace Overmind.Tactics.Model.Commands
 		[DataMember]
 		public Vector2 Target;
 
-		public bool TryExecute(GameState state)
+		public bool TryExecute(GameModel state)
 		{
 			if (Character == null)
 				Character = state.CharacterCollection.Single(c => c.Id == CharacterId);
 			if (Ability == null)
 				Ability = Character.CharacterClass.Abilities.Single(a => a.Name == AbilityName);
 
-			return Character.Cast(state, Ability, Target);
+			return Character.Cast(state.CharacterFinder, Ability, Target);
 		}
 	}
 }

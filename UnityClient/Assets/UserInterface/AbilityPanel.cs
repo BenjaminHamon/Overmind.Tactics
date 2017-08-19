@@ -9,10 +9,10 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 {
 	public class AbilityPanel : MonoBehaviour
 	{
-		public event Action<Character, IAbility> AbilityButtonClick;
+		public event Action<CharacterModel, IAbility> AbilityButtonClick;
 
-		private Character character;
-		public Character Character
+		private CharacterModel character;
+		public CharacterModel Character
 		{
 			get { return character; }
 			set

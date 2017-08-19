@@ -15,7 +15,7 @@ namespace Overmind.Tactics.UnityClient
 
 		private readonly LayerMask layerMask;
 
-		public Character GetCharacter(Model.Vector2 position)
+		public CharacterModel GetCharacter(Data.Vector2 position)
 		{
 			//Debug.LogFormat("[UnityCharacterFinder] GetCharacter (Position: {0})", position);
 			//Debug.DrawLine(position.ToUnityVector() - new UnityEngine.Vector2(0.5f, 0.5f),
@@ -25,7 +25,7 @@ namespace Overmind.Tactics.UnityClient
 			return hit.collider?.GetComponentInParent<CharacterView>()?.Model;
 		}
 
-		public IEnumerable<Character> GetCharactersAround(Model.Vector2 center, int width, int height, int rotation)
+		public IEnumerable<CharacterModel> GetCharactersAround(Data.Vector2 center, int width, int height, int rotation)
 		{
 			UnityEngine.Vector2 bottomLeft = new UnityEngine.Vector2(- width / 2f, -height / 2f);
 			UnityEngine.Vector2 topRight = new UnityEngine.Vector2(width / 2f, height / 2f);
@@ -42,7 +42,7 @@ namespace Overmind.Tactics.UnityClient
 				.Select(target => target.GetComponentInParent<CharacterView>()?.Model).Where(target => (target != null));
 		}
 
-		public IEnumerable<Character> GetCharactersOnLine(Model.Vector2 origin, Model.Vector2 end)
+		public IEnumerable<CharacterModel> GetCharactersOnLine(Data.Vector2 origin, Data.Vector2 end)
 		{
 			//Debug.LogFormat("[UnityCharacterFinder] GetCharactersOnLine (Origin: {0}, End: {1})", origin, end);
 			//Debug.DrawLine(origin.ToUnityVector(), end.ToUnityVector(), Color.red, 3);

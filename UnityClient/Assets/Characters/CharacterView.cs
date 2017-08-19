@@ -11,8 +11,6 @@ namespace Overmind.Tactics.UnityClient
 {
 	public class CharacterView : MonoBehaviour
 	{
-		public Character Model;
-
 		[SerializeField]
 		private SpriteRenderer characterSprite;
 		[SerializeField]
@@ -22,9 +20,13 @@ namespace Overmind.Tactics.UnityClient
 		[SerializeField]
 		private GameObject projectilePrefab;
 
+		[SerializeField]
+		private string characterClass;
+		public CharacterModel Model;
+
 		public void UpdateFromModel()
 		{
-			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner.Name);
+			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner?.Name ?? "null");
 			characterSprite.sprite = Resources.Load<Sprite>("Characters/" + Model.CharacterClass.CharacterSprite);
 			transform.localPosition = Model.Position.ToUnityVector();
 			healthBar.localScale = new Vector3(Model.HealthPoints == 0 ? 0 : (float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
@@ -32,6 +34,8 @@ namespace Overmind.Tactics.UnityClient
 
 		public void Start()
 		{
+			UpdateFromModel();
+
 			Model.Moved += Move;
 			Model.HealthPointsChanged += OnHealthPointsChanged;
 			Model.AbilityCast += OnAbilityCast;
@@ -41,7 +45,7 @@ namespace Overmind.Tactics.UnityClient
 		#region Movement
 
 		private List<UnityEngine.Vector2> currentPath = new List<UnityEngine.Vector2>();
-		private void Move(Character model, List<Model.Vector2> path)
+		private void Move(CharacterModel model, List<Data.Vector2> path)
 		{
 			bool isCoroutineRunning = currentPath.Any();
 			currentPath.AddRange(path.Select(node => node.ToUnityVector()));
@@ -64,7 +68,7 @@ namespace Overmind.Tactics.UnityClient
 
 		#endregion // Movement
 
-		private void OnHealthPointsChanged(Character model, int oldValue, int newValue)
+		private void OnHealthPointsChanged(CharacterModel model, int oldValue, int newValue)
 		{
 			healthBar.localScale = new Vector3(newValue == 0 ? 0 : (float)newValue / Model.CharacterClass.HealthPoints, 1, 1);
 
@@ -78,13 +82,13 @@ namespace Overmind.Tactics.UnityClient
 			statusText.TextElement.color = valueChange >= 0 ? Color.green : Color.red;
 		}
 
-		private void OnAbilityCast(Character model, IAbility ability, Model.Vector2 target)
+		private void OnAbilityCast(CharacterModel model, IAbility ability, Data.Vector2 target)
 		{
 			if (ability is ProjectileAbility)
 			{
 				ProjectileView projectile = GameObjectExtensions.Instantiate(projectilePrefab, transform.parent).GetComponent<ProjectileView>();
 				projectile.Animator.runtimeAnimatorController
-					= UnityContentProvider.LoadAsset<RuntimeAnimatorController>("Abilities/Ability_" + ability.Name + "_Projectile");
+					= UnityDataProvider.LoadAsset<RuntimeAnimatorController>("Abilities/Ability_" + ability.Name + "_Projectile");
 				projectile.transform.localPosition = model.Position.ToUnityVector();
 				projectile.Target = target.ToUnityVector();
 			}

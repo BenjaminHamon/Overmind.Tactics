@@ -1,4 +1,5 @@
-﻿using Overmind.Tactics.Model;
+﻿using Overmind.Tactics.Data;
+using Overmind.Tactics.Model;
 using Overmind.Tactics.Model.Abilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace Overmind.Tactics.UnityClient.Tests
 	internal class Test_CharacterView : MonoBehaviour
 	{
 		[SerializeField]
-		private CharacterView character;
+		private GameObject characterPrefab;
 		[SerializeField]
 		private LayerMask targetLayerMask;
 
@@ -34,56 +35,59 @@ namespace Overmind.Tactics.UnityClient.Tests
 
 		private IEnumerator Test_Move()
 		{
-			character.Model.Move(new List<Model.Vector2>() { new Model.Vector2(1, 0), new Model.Vector2(1, 1) });
-			yield return new WaitForSeconds(3);
-			character.Model.Move(new List<Model.Vector2>() { Model.Vector2.Zero });
+			CharacterClass characterClass = new CharacterClass() { Name = "TestCharacterClass", HealthPoints = 10, CharacterSprite = "Character_Example_8" };
+			CharacterView character = Instantiate(characterPrefab).GetComponent<CharacterView>();
+			character.Model = new CharacterModel(new CharacterData(), characterClass, null, true);
 			yield return new WaitForSeconds(1);
 
-			character.Model.Move(new List<Model.Vector2>()
+			character.Model.Move(new List<Data.Vector2>() { new Data.Vector2(1, 0), new Data.Vector2(1, 1) });
+			yield return new WaitForSeconds(3);
+			character.Model.Move(new List<Data.Vector2>() { Data.Vector2.Zero });
+			yield return new WaitForSeconds(1);
+
+			character.Model.Move(new List<Data.Vector2>()
 			{
-				new Model.Vector2(1, 0),
-				new Model.Vector2(1, 1),
-				new Model.Vector2(0, 1),
-				new Model.Vector2(-1, 1),
-				new Model.Vector2(-1, 0),
-				new Model.Vector2(-1, -1),
-				new Model.Vector2(0, -1),
-				new Model.Vector2(1, -1),
+				new Data.Vector2(1, 0),
+				new Data.Vector2(1, 1),
+				new Data.Vector2(0, 1),
+				new Data.Vector2(-1, 1),
+				new Data.Vector2(-1, 0),
+				new Data.Vector2(-1, -1),
+				new Data.Vector2(0, -1),
+				new Data.Vector2(1, -1),
 			});
 			yield return new WaitForSeconds(3);
-			character.Model.Move(new List<Model.Vector2>() { Model.Vector2.Zero });
+
+			Destroy(character.gameObject);
 			yield return new WaitForSeconds(1);
 		}
 
 		private IEnumerator Test_DamageSelf()
 		{
-			character.Model.CharacterClass = new CharacterClass() { HealthPoints = 10, CharacterSprite = "Character_Example_8" };
-			character.Model.HealthPoints = 10;
-			character.Model.Position = new Model.Vector2(1, 0);
-			character.UpdateFromModel();
-
-			GameState gameState = new GameState();
-			gameState.Initialize(null, new UnityCharacterFinder(targetLayerMask), null);
-
+			CharacterView character = Instantiate(characterPrefab).GetComponent<CharacterView>();
+			CharacterClass characterClass = new CharacterClass() { Name = "TestCharacterClass", HealthPoints = 10, CharacterSprite = "Character_Example_8" };
+			character.Model = new CharacterModel(new CharacterData(), characterClass, null, true);
+			yield return new WaitForSeconds(1);
+			
 			IAbility ability = new AreaAbility() { Power = 2, TargetWidth = 1, TargetHeight = 1,
 				TargetTypes = new List<TargetType>() { TargetType.Self } };
-			ability.Cast(gameState, character.Model, character.Model.Position);
-			yield return new WaitForSeconds(3);
+			ability.Cast(new UnityCharacterFinder(targetLayerMask), character.Model, character.Model.Position);
+			yield return new WaitForSeconds(1);
+
+			Destroy(character.gameObject);
+			yield return new WaitForSeconds(1);
 		}
 
 		private IEnumerator Test_Die()
 		{
-			character.Model.CharacterClass = new CharacterClass() { HealthPoints = 10, CharacterSprite = "Character_Example_8" };
-			character.Model.HealthPoints = 10;
-			character.Model.Position = new Model.Vector2(1, 0);
-			character.UpdateFromModel();
+			CharacterView character = Instantiate(characterPrefab).GetComponent<CharacterView>();
+			CharacterClass characterClass = new CharacterClass() { Name = "TestCharacterClass", HealthPoints = 10, CharacterSprite = "Character_Example_8" };
+			character.Model = new CharacterModel(new CharacterData(), characterClass, null, true);
+			yield return new WaitForSeconds(1);
 
-			GameState gameState = new GameState();
-			gameState.Initialize(null, new UnityCharacterFinder(targetLayerMask), null);
-			
 			IAbility ability = new AreaAbility() { Power = 20, TargetWidth = 1, TargetHeight = 1,
 				TargetTypes = new List<TargetType>() { TargetType.Self } };
-			ability.Cast(gameState, character.Model, character.Model.Position);
+			ability.Cast(new UnityCharacterFinder(targetLayerMask), character.Model, character.Model.Position);
 			yield return new WaitForSeconds(3);
 		}
 	}

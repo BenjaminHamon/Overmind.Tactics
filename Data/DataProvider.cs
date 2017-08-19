@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.IO;
 
-namespace Overmind.Tactics.Model
+namespace Overmind.Tactics.Data
 {
-	public class ContentProvider
+	public class DataProvider
 	{
-		public ContentProvider(JsonSerializer serializer, string contentDirectory, string userDirectory)
+		public DataProvider(JsonSerializer serializer, string contentDirectory, string userDirectory)
 		{
 			this.serializer = serializer;
 			this.contentDirectory = contentDirectory;
@@ -16,20 +15,6 @@ namespace Overmind.Tactics.Model
 		protected readonly JsonSerializer serializer;
 		private readonly string contentDirectory;
 		private readonly string userDirectory;
-		private readonly Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
-
-		public CharacterClass GetCharacterClass(string name)
-		{
-			if (characterClassCollection.ContainsKey(name) == false)
-				characterClassCollection[name] = LoadContent<CharacterClass>("Characters/" + name);
-			return characterClassCollection[name];
-		}
-
-		public GameState LoadScenario(string path) { return LoadContent<GameState>("Scenarios/" + path); }
-		public void SaveScenario(string path, GameState gameState) { SaveContent("Scenarios/" + path, gameState); }
-
-		public GameState LoadGame(string path) { return LoadUserData<GameState>("Saves/" + path); }
-		public void SaveGame(string path, GameState gameState) { SaveUserData("Saves/" + path, gameState); }
 
 		protected virtual TData LoadContent<TData>(string path) { return Load<TData>(contentDirectory, path); }
 		protected virtual void SaveContent<TData>(string path, TData data) { Save(contentDirectory, path, data); }

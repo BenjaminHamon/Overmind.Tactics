@@ -1,4 +1,5 @@
-﻿using Overmind.Tactics.Model;
+﻿using Overmind.Tactics.Data;
+using Overmind.Tactics.Model;
 using Overmind.Tactics.UnityClient.UserInterface;
 using System.Collections;
 using UnityEngine;
@@ -30,19 +31,15 @@ namespace Overmind.Tactics.UnityClient.Tests.UserInterface
 			characterPanel.Character = null;
 			yield return new WaitForSeconds(1);
 
-			characterPanel.Character = new Character()
+			CharacterClass characterClass = new CharacterClass()
 			{
-				Owner = new Player() { Name = "TestPlayer" },
-				CharacterClass = new CharacterClass()
-				{
-					Name = "TestCharacterClass",
-					CharacterSprite = "Character_Example_8",
-					HealthPoints = 10,
-					ActionPoints = 5,
-				},
+				Name = "TestCharacterClass",
+				CharacterSprite = "Character_Example_8",
 				HealthPoints = 10,
 				ActionPoints = 5,
 			};
+			PlayerModel player = new PlayerModel(new PlayerData() { Name = "TestPlayer" });
+			characterPanel.Character = new CharacterModel(new CharacterData(), characterClass, player, true);
 			yield return new WaitForSeconds(3);
 
 			characterPanel.Character.ActionPoints = 2;

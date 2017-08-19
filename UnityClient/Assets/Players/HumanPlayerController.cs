@@ -95,7 +95,7 @@ namespace Overmind.Tactics.UnityClient
 					RaycastHit2D hit = Physics2D.Raycast(hitOrigin, Vector2.zero);
 					if (hit.collider != null)
 					{
-						Character selection = Player.Selection.Model;
+						CharacterModel selection = Player.Selection.Model;
 						CharacterView target = hit.collider.GetComponentInParent<CharacterView>();
 
 						if (target == null)
@@ -127,7 +127,7 @@ namespace Overmind.Tactics.UnityClient
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
-			Character selection = Player.Selection.Model;
+			CharacterModel selection = Player.Selection.Model;
 			Vector2 targetPosition = abilityCastView.TargetPosition;
 
 			if (currentAbility == null)
@@ -165,7 +165,7 @@ namespace Overmind.Tactics.UnityClient
 				ClearCurrentCommand();
 		}
 
-		private void PickTarget(Character caster, IAbility ability)
+		private void PickTarget(CharacterModel caster, IAbility ability)
 		{
 			ClearCurrentCommand();
 
@@ -191,20 +191,20 @@ namespace Overmind.Tactics.UnityClient
 		#region Path
 		[SerializeField]
 		private PathView pathView;
-		private Model.Vector2? currentPathStart;
-		private Model.Vector2? currentPathEnd;
-		private List<Model.Vector2> currentPath;
+		private Data.Vector2? currentPathStart;
+		private Data.Vector2? currentPathEnd;
+		private List<Data.Vector2> currentPath;
 
-		private void ShowPath(Model.Vector2 start, Model.Vector2 end)
+		private void ShowPath(Data.Vector2 start, Data.Vector2 end)
 		{
-			start = new Model.Vector2(Mathf.Round(start.X), Mathf.Round(start.Y));
-			end = new Model.Vector2(Mathf.Round(end.X),Mathf.Round(end.Y));
+			start = new Data.Vector2(Mathf.Round(start.X), Mathf.Round(start.Y));
+			end = new Data.Vector2(Mathf.Round(end.X),Mathf.Round(end.Y));
 
 			if ((currentPath == null) || (currentPathStart != start) || (currentPathEnd != end))
 			{
 				// Debug.LogFormat(this, "[HumanPlayerController] FindPath (Start: {0}, End: {1})", start, end);
-				currentPath = new List<Model.Vector2>();
-				try { currentPath = Game.Model.ActiveState.Navigation.FindPath(start, end); }
+				currentPath = new List<Data.Vector2>();
+				try { currentPath = Game.Model.Navigation.FindPath(start, end); }
 				catch (TimeoutException exception) { Debug.LogWarning(exception); }
 				
 				currentPathStart = start;

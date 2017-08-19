@@ -1,6 +1,8 @@
-﻿namespace Overmind.Tactics.Model.Navigation
+﻿using Overmind.Tactics.Data;
+
+namespace Overmind.Tactics.Model.Navigation
 {
-	public class PathNode
+	internal class PathNode
 	{
 		public Vector2 Position;
 		public float DirectDistanceToDestination;

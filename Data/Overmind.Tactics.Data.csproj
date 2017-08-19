@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3221F396-3C43-45BF-843D-3E59A97A5533}</ProjectGuid>
+    <ProjectGuid>{DDE61537-FC52-4682-8B81-80C9257CBCE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Overmind.Tactics.Model</RootNamespace>
-    <AssemblyName>Overmind.Tactics.Model</AssemblyName>
+    <RootNamespace>Overmind.Tactics.Data</RootNamespace>
+    <AssemblyName>Overmind.Tactics.Data</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <IntermediateOutputPath>$(SolutionDir)/.build/Model/obj/$(Configuration)</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)/.build/Model/bin/$(Configuration)</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)/.build/Data/obj/$(Configuration)</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)/.build/Data/bin/$(Configuration)</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,40 +32,22 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abilities\AreaAbility.cs" />
-    <Compile Include="Abilities\IAbility.cs" />
-    <Compile Include="Abilities\ProjectileAbility.cs" />
-    <Compile Include="CharacterClass.cs" />
-    <Compile Include="CharacterModel.cs" />
-    <Compile Include="Commands\CastAbilityCommand.cs" />
-    <Compile Include="Commands\EndTurnCommand.cs" />
-    <Compile Include="Commands\IGameCommand.cs" />
-    <Compile Include="Commands\MoveCommand.cs" />
-    <Compile Include="GameDataProvider.cs" />
-    <Compile Include="GameModel.cs" />
-    <Compile Include="ICharacterFinder.cs" />
-    <Compile Include="Navigation\BasicNavigation.cs" />
-    <Compile Include="Navigation\INavigation.cs" />
-    <Compile Include="Navigation\NavigationRules.cs" />
-    <Compile Include="Navigation\AstarNavigation.cs" />
-    <Compile Include="Navigation\PathNode.cs" />
-    <Compile Include="PlayerModel.cs" />
+    <Compile Include="CharacterData.cs" />
+    <Compile Include="DataProvider.cs" />
+    <Compile Include="GameData.cs" />
+    <Compile Include="IGameCommandData.cs" />
+    <Compile Include="PlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TargetType.cs" />
+    <Compile Include="Vector2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Data\Overmind.Tactics.Data.csproj">
-      <Project>{dde61537-fc52-4682-8b81-80c9257cbce1}</Project>
-      <Name>Overmind.Tactics.Data</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

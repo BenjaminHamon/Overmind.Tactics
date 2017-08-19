@@ -24,12 +24,12 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 		[SerializeField]
 		private Color outOfRangeColor;
 
-		private Character caster;
+		private CharacterModel caster;
 		private IAbility ability;
 
 		public Vector2 TargetPosition { get; private set; }
 
-		public void Change(bool enabled, Character caster, IAbility ability)
+		public void Change(bool enabled, CharacterModel caster, IAbility ability)
 		{
 			targetArea.gameObject.SetActive(false);
 			targetLine.gameObject.SetActive(false);

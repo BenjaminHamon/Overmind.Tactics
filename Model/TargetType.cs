@@ -17,14 +17,14 @@ namespace Overmind.Tactics.Model
 
 	public static class TargetTypeExtensions
 	{
-		public static bool IsTargetAllowed(IEnumerable<TargetType> targetTypes, Character caster, Character target)
+		public static bool IsTargetAllowed(IEnumerable<TargetType> targetTypes, CharacterModel caster, CharacterModel target)
 		{
 			if (targetTypes.Any() == false)
 				return false;
 			return targetTypes.All(type => IsTargetAllowed(type, caster, target));
 		}
 
-		private static bool IsTargetAllowed(TargetType type, Character caster, Character target)
+		private static bool IsTargetAllowed(TargetType type, CharacterModel caster, CharacterModel target)
 		{
 			switch (type)
 			{

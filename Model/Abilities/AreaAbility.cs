@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overmind.Tactics.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,24 +24,24 @@ namespace Overmind.Tactics.Model.Abilities
 			return Math.Abs(targetRelativeToCaster.Y) < Math.Abs(targetRelativeToCaster.X) ? 90 : 0;
 		}
 
-		public bool Cast(GameState game, Character caster, Vector2 targetCenter)
+		public bool Cast(ICharacterFinder characterFinder, CharacterModel caster, Vector2 targetCenter)
 		{
 			if ((targetCenter - caster.Position).Norm > Range)
 				return false;
 
-			List<Character> targetCollection = game.CharacterFinder
+			List<CharacterModel> targetCollection = characterFinder
 				.GetCharactersAround(targetCenter, TargetWidth, TargetHeight, GetRotation(caster.Position, targetCenter))
 				.Where(target => TargetTypeExtensions.IsTargetAllowed(TargetTypes, caster, target)).ToList();
 			if (TargetRequired && (targetCollection.Any() == false))
 				return false;
 
-			foreach (Character currentTarget in targetCollection)
+			foreach (CharacterModel currentTarget in targetCollection)
 				Apply(currentTarget);
 			
 			return true;
 		}
 
-		private void Apply(Character target)
+		private void Apply(CharacterModel target)
 		{
 			target.HealthPoints -= Power;
 		}
