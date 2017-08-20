@@ -1,3 +1,4 @@
+using Overmind.Tactics.Data;
 using Overmind.Tactics.Model;
 using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.UnityClient.Unity;
@@ -23,18 +24,17 @@ namespace Overmind.Tactics.UnityClient
 		[SerializeField]
 		private string characterClass;
 		public CharacterModel Model;
+		public CharacterData Data;
 
-		public void UpdateFromModel()
+		private void Start()
 		{
+			if (Model == null)
+				Model = new CharacterModel(Data, UnityApplication.DataProvider.GetCharacterClass(Data.CharacterClass), null, true);
+
 			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner?.Name ?? "null");
 			characterSprite.sprite = Resources.Load<Sprite>("Characters/" + Model.CharacterClass.CharacterSprite);
 			transform.localPosition = Model.Position.ToUnityVector();
 			healthBar.localScale = new Vector3(Model.HealthPoints == 0 ? 0 : (float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
-		}
-
-		public void Start()
-		{
-			UpdateFromModel();
 
 			Model.Moved += Move;
 			Model.HealthPointsChanged += OnHealthPointsChanged;

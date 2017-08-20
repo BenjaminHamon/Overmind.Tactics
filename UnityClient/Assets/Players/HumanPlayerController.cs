@@ -44,9 +44,6 @@ namespace Overmind.Tactics.UnityClient
 
 		public void Update()
 		{
-			if (Game.ActivePlayer != Player)
-				return;
-
 			UpdateCamera();
 
 			if (isPickingTarget)

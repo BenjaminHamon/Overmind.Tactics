@@ -1,4 +1,5 @@
-﻿using Overmind.Tactics.Model;
+﻿using Overmind.Tactics.Data;
+using Overmind.Tactics.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,13 @@ namespace Overmind.Tactics.UnityClient
 {
 	public class PlayerView : MonoBehaviour
 	{
-		public PlayerModel Model;
-		public string PlayerName { get { return Model.Name; } }
-
+		[SerializeField]
+		private GameObject selectionIndicator;
 		public GameObject LocalController;
+
+		public PlayerModel Model;
+		public PlayerData Data;
+		public string PlayerName { get { return Model.Name; } }
 
 		public Func<IEnumerable<CharacterView>> GetCharacterCollection;
 
@@ -39,17 +43,12 @@ namespace Overmind.Tactics.UnityClient
 			}
 		}
 
-		[SerializeField]
-		private GameObject selectionIndicator;
-
-		public void UpdateFromModel()
+		private void Start()
 		{
+			if (Model == null)
+				Model = new PlayerModel(Data);
+
 			name = String.Format("Player ({0})", Model.Name);
-		}
-
-		public void Start()
-		{
-			UpdateFromModel();
 
 			Model.TurnStarted += _ => Enable();
 			Model.TurnEnded += _ => Disable();

@@ -28,69 +28,39 @@ namespace Overmind.Tactics.UnityClient
 		[SerializeField]
 		private LayerMask targetLayerMask;
 
-		public GameModel Model { get; set; }
-
 		[SerializeField]
 		private List<PlayerView> playerCollection;
-		public PlayerView ActivePlayer;
+		[SerializeField]
+		private List<CharacterView> characterCollection;
 
-		public List<CharacterView> CharacterCollection;
+		public GameModel Model { get; set; }
+		public GameData Data;
 
-		// About game initialization
-		// We want to handle two cases: loading from a saved state and starting from an existing scene.
-		//
-		// The load case follows these steps:
-		//		Game.Awake
-		//			Game.Load
-		//				Instantiate character (Character.Awake)
-		//				Character.UpdateFromModel
-		//		Game.Start / Character.Start (Undefined order)
-		//
-		// Character.UpdateFromModel is not called for an existing scene,
-		// thus the character objects must be already fully initialized in the scene.
-		//
-		// Game.Start starts the game logic and assumes all entities are ready.
-
-		public void Start()
+		private void Start()
 		{
 			Debug.Log("[GameView] Start");
 
 			if (Model == null)
-				UpdateModelFromScene();
-			else
-				ApplyModelToScene();
+				Model = new GameModel(Data, UnityApplication.DataProvider);
 			Model.Initialize(new UnityCharacterFinder(targetLayerMask), new AstarNavigation(GameView.IsTileAccessible));
-
 			foreach (PlayerView playerView in playerCollection)
-				playerView.GetCharacterCollection = () => CharacterCollection.Where(c => c.Model.Owner == playerView.Model);
-			if (Model.ActivePlayer != null)
-				ActivePlayer = playerCollection.Single(p => p.Model == Model.ActivePlayer);
+				playerView.GetCharacterCollection = () => characterCollection.Where(c => c.Model.Owner == playerView.Model);
 			
-			Model.ActivePlayerChanged += _ => ActivePlayer = playerCollection.Single(p => p.Model == Model.ActivePlayer);
 			foreach (PlayerModel player in Model.PlayerCollection)
 				player.Defeated += p => Debug.LogFormat(this, "[GameView] {0} is defeated", p.Name);
 			foreach (CharacterModel character in Model.CharacterCollection)
-				character.Died += characterModel => CharacterCollection.RemoveAll(characterView => characterView.Model == characterModel);
+				character.Died += characterModel => characterCollection.RemoveAll(characterView => characterView.Model == characterModel);
 			Model.GameEnded += OnGameEnded;
 
 			Model.Start();
-			if (ActivePlayer != null)
-				ActivePlayer.Enable();
+			if (Model.ActivePlayer != null)
+				playerCollection.Single(p => p.Model == Model.ActivePlayer).Enable();
 		}
-
-		// The editor maintains several game states:
-		//   ActiveState, the current game state according to the underlying game model
-		//   SaveState, a copy of the initial game state with a command history tracking changes to get to the active state
-		//   The scene, the game state corresponding to game objects instantiated by Unity
-		//
-		// In game, the active state is the the state the game relies upon.
-		// The save state can be used to replay commands to get to any past point in the game.
-		// The scene can be modified in the editor directly and used to update the model to create saves for game scenarios.
 
 		public void ResetScene()
 		{
 			playerCollection = new List<PlayerView>();
-			CharacterCollection = new List<CharacterView>();
+			characterCollection = new List<CharacterView>();
 			mapGroup.DestroyAllChildren();
 			playerGroup.DestroyAllChildren();
 			characterGroup.DestroyAllChildren();
@@ -98,7 +68,32 @@ namespace Overmind.Tactics.UnityClient
 
 		public void UpdateModelFromScene()
 		{
-			throw new NotImplementedException();
+			GameData gameData = new GameData();
+
+			if (mapGroup.childCount > 0)
+				gameData.Map = mapGroup.GetChild(0).name;
+
+			List<PlayerView> playerViewCollection = playerGroup.GetComponentsInChildren<PlayerView>(true).ToList();
+			gameData.PlayerCollection = playerViewCollection.Select(p => p.Data).Cast<PlayerData>().ToList();
+
+			List<CharacterView> characterViewCollection = characterGroup.GetComponentsInChildren<CharacterView>(true).ToList();
+			foreach (CharacterView characterView in characterViewCollection)
+			{
+				characterView.Data.Position = ((UnityEngine.Vector2)characterView.transform.localPosition).ToModelVector();
+				gameData.CharacterCollection.Add(characterView.Data);
+			}
+
+			GameModel model = new GameModel(gameData, UnityApplication.DataProvider);
+			foreach (PlayerView playerView in playerViewCollection)
+				playerView.Model = model.PlayerCollection.Single(player => player.Id == playerView.Data.Id);
+			foreach (CharacterView characterView in characterViewCollection)
+				characterView.Model = model.CharacterCollection.Single(character => character.Id == characterView.Data.Id);
+
+			this.Model = model;
+			this.playerCollection = playerViewCollection;
+			this.characterCollection = characterViewCollection;
+
+			Debug.LogFormat(this, "[GameView] Updated model from scene");
 		}
 
 		public void ApplyModelToScene()
@@ -115,8 +110,8 @@ namespace Overmind.Tactics.UnityClient
 			foreach (PlayerModel playerModel in Model.PlayerCollection)
 			{
 				PlayerView playerView = GameObjectExtensions.Instantiate(playerPrefab, playerGroup).GetComponent<PlayerView>();
+				playerView.Data = Data.PlayerCollection.Single(p => p.Id == playerModel.Id);
 				playerView.Model = playerModel;
-				playerView.UpdateFromModel();
 				playerCollection.Add(playerView);
 
 				HumanPlayerController playerController
@@ -131,9 +126,9 @@ namespace Overmind.Tactics.UnityClient
 			foreach (CharacterModel characterModel in Model.CharacterCollection)
 			{
 				CharacterView characterView = GameObjectExtensions.Instantiate(characterPrefab, characterGroup).GetComponent<CharacterView>();
+				characterView.Data = Data.CharacterCollection.Single(c => c.Id == characterModel.Id);
 				characterView.Model = characterModel;
-				characterView.UpdateFromModel();
-				CharacterCollection.Add(characterView);
+				characterCollection.Add(characterView);
 			}
 
 			Debug.LogFormat(this, "[GameView] Applied model to scene");
