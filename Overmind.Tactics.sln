@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityClient.Editor", "UnityClient\UnityClient.Editor.csproj", "{B4B22F55-01C2-61A0-FE5D-CED04A59893D}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF7D7396-D4C0-4E9A-8007-4BEA428494DA}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Credits.txt = Credits.txt
+		License.txt = License.txt
 	EndProjectSection
 EndProject
 Global
@@ -41,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37A5E065-D0C6-4995-A485-F6E9581D063E}
 	EndGlobalSection
 EndGlobal
