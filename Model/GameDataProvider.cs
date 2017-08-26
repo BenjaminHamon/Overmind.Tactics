@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Overmind.Tactics.Data;
+using System;
 using System.Collections.Generic;
 
 namespace Overmind.Tactics.Model
@@ -14,6 +15,9 @@ namespace Overmind.Tactics.Model
 
 		public CharacterClass GetCharacterClass(string name)
 		{
+			if (String.IsNullOrEmpty(name))
+				throw new ArgumentException("Name must not be empty", nameof(name));
+
 			if (characterClassCollection.ContainsKey(name) == false)
 				characterClassCollection[name] = LoadContent<CharacterClass>("Characters/" + name);
 			return characterClassCollection[name];

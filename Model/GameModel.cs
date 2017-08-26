@@ -70,6 +70,13 @@ namespace Overmind.Tactics.Model
 
 		public void Start()
 		{
+			isRunning = true;
+			foreach (PlayerModel player in PlayerCollection)
+				player.CheckState(this);
+			CheckGameEnd();
+			if (isRunning == false)
+				return;
+
 			foreach (PlayerModel player in PlayerCollection)
 			{
 				player.TurnEnded += OnPlayerTurnEnded;
@@ -78,11 +85,6 @@ namespace Overmind.Tactics.Model
 
 			foreach (CharacterModel character in CharacterCollection)
 				character.Died += OnCharacterDied;
-
-			isRunning = true;
-			CheckGameEnd();
-			if (isRunning == false)
-				return;
 
 			if (ActiveData.Turn == 0)
 			{
