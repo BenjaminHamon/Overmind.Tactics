@@ -1,6 +1,7 @@
 ﻿using Overmind.Tactics.Model;
 using Overmind.Tactics.Model.Abilities;
 using Overmind.Tactics.UnityClient.Unity;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Vector2 = UnityEngine.Vector2;
@@ -28,6 +29,7 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 		private IAbility ability;
 
 		public Vector2 TargetPosition { get; private set; }
+		public event Action TargetPositionChanged;
 
 		public void Change(bool enabled, CharacterModel caster, IAbility ability)
 		{
@@ -44,6 +46,7 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 
 			Vector2 casterPosition = caster.Position.ToUnityVector();
 			targetArea.localScale = new Vector2(1, 1);
+			targetArea.GetComponent<SpriteRenderer>().color = inRangeColor;
 			targetLine.SetPosition(0, casterPosition);
 
 			if (ability is AreaAbility)
@@ -69,15 +72,27 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 			if (this.TargetPosition != targetPosition)
 			{
 				targetArea.localPosition = targetPosition;
-				targetArea.localEulerAngles = new Vector3(0, 0, ability == null ? 0 : ability.GetRotation(caster.Position, targetPosition.ToModelVector()));
+				this.TargetPosition = targetPosition;
+				TargetPositionChanged?.Invoke();
+				UpdateTarget();
+			}
 
+			targetArea.gameObject.SetActive(true);
+		}
+
+		private void UpdateTarget()
+		{
+			targetArea.localEulerAngles = new Vector3(0, 0, ability == null ? 0 : ability.GetRotation(caster.Position, TargetPosition.ToModelVector()));
+
+			if (ability != null)
+			{
 				if (ability is ProjectileAbility)
 				{
-					targetLine.SetPosition(1, targetPosition);
+					targetLine.SetPosition(1, TargetPosition);
 					targetLine.gameObject.SetActive(true);
 				}
 
-				if ((caster.Position - targetPosition.ToModelVector()).Norm <= ability.Range)
+				if ((caster.Position - TargetPosition.ToModelVector()).Norm <= ability.Range)
 				{
 					targetArea.GetComponent<SpriteRenderer>().color = inRangeColor;
 				}
@@ -86,14 +101,10 @@ namespace Overmind.Tactics.UnityClient.UserInterface
 					targetArea.GetComponent<SpriteRenderer>().color = outOfRangeColor;
 					targetLine.gameObject.SetActive(false);
 				}
-
-				this.TargetPosition = targetPosition;
 			}
-
-			targetArea.gameObject.SetActive(true);
 		}
 
-		public Vector2 AdjustTargetPosition(Vector2 targetPosition, IAbility ability)
+		private Vector2 AdjustTargetPosition(Vector2 targetPosition, IAbility ability)
 		{
 			if (ability != null)
 			{

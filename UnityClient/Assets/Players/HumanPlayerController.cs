@@ -22,6 +22,7 @@ namespace Overmind.Tactics.UnityClient
 		public float CameraSpeed;
 
 		private bool isPickingTarget;
+		private bool autoCurrentAbility;
 		private IAbility currentAbility;
 		
 		[SerializeField]
@@ -37,8 +38,8 @@ namespace Overmind.Tactics.UnityClient
 			UserInterface.EndTurnButton.onClick.AddListener(() => Game.Model.ExecuteCommand(new EndTurnCommand() { Player = Player.Model, PlayerId = Player.Model.Id }));
 			UserInterface.SelectPreviousCharacterButton.onClick.AddListener(() => Player.SelectPrevious());
 			UserInterface.SelectNextCharacterButton.onClick.AddListener(() => Player.SelectNext());
-			UserInterface.AbilityPanel.AbilityButtonClick += PickTarget;
-
+			UserInterface.AbilityPanel.AbilityButtonClick += (caster, ability) => PickTarget(caster, false, ability);
+			abilityCastView.TargetPositionChanged += UpdateCurrentAbility;
 			Player.Model.TurnEnded += _ => ClearCurrentCommand();
 		}
 
@@ -72,50 +73,16 @@ namespace Overmind.Tactics.UnityClient
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
-			if (Input.GetMouseButtonUp(0))
+			if (Input.GetMouseButtonUp(InputExtensions.LeftClick))
 			{
-				Vector2 hitOrigin = Camera.ScreenToWorldPoint(Input.mousePosition);
-				RaycastHit2D hit = Physics2D.Raycast(hitOrigin, Vector2.zero);
+				RaycastHit2D hit = Physics2D.Raycast(Camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 				Player.Selection = hit.collider != null ? hit.collider.GetComponentInParent<CharacterView>() : null;
 			}
 
 			if ((Player.Selection != null) && (Player.Selection.Model.Owner == Player.Model))
 			{
-				if (Input.GetMouseButton(1))
-				{
-					ShowPath(Player.Selection.Model.Position, ((Vector2)Camera.ScreenToWorldPoint(Input.mousePosition)).ToModelVector());
-				}
-
-				if (Input.GetMouseButtonUp(1))
-				{
-					Vector2 hitOrigin = Camera.ScreenToWorldPoint(Input.mousePosition);
-					RaycastHit2D hit = Physics2D.Raycast(hitOrigin, Vector2.zero);
-					if (hit.collider != null)
-					{
-						CharacterModel selection = Player.Selection.Model;
-						CharacterView target = hit.collider.GetComponentInParent<CharacterView>();
-
-						if (target == null)
-							Game.Model.ExecuteCommand(new MoveCommand() { Character = selection, CharacterId = selection.Id, Path = currentPath });
-						else
-						{
-							IAbility defaultAbility = Player.Selection.Model.CharacterClass.DefaultAbility;
-							if (defaultAbility != null)
-							{
-								Game.Model.ExecuteCommand(new CastAbilityCommand()
-								{
-									Character = selection,
-									CharacterId = selection.Id,
-									Ability = defaultAbility,
-									AbilityName = defaultAbility.Name,
-									Target = abilityCastView.AdjustTargetPosition(hitOrigin, defaultAbility).ToModelVector(),
-								});
-							}
-						}
-					}
-
-					ClearPath();
-				}
+				if (Input.GetMouseButtonDown(InputExtensions.RightClick))
+					PickTarget(Player.Selection.Model, true, null);
 			}
 		}
 
@@ -124,45 +91,72 @@ namespace Overmind.Tactics.UnityClient
 			if (EventSystem.current.IsPointerOverGameObject())
 				return;
 
-			CharacterModel selection = Player.Selection.Model;
-			Vector2 targetPosition = abilityCastView.TargetPosition;
+			CharacterModel caster = Player.Selection.Model;
 
-			if (currentAbility == null)
-				ShowPath(selection.Position, targetPosition.ToModelVector());
-
-			if (Input.GetMouseButtonUp(0))
+			if (Input.GetMouseButtonUp(autoCurrentAbility ? InputExtensions.RightClick : InputExtensions.LeftClick))
 			{
-				IGameCommand command;
+				IGameCommand command = null;
+				
 				if (currentAbility == null)
 				{
 					command = new MoveCommand()
 					{
-						Character = selection,
-						CharacterId = selection.Id,
-						Path = currentPath,
+						Character = caster,
+						CharacterId = caster.Id,
+						Path = currentPath ?? new List<Data.Vector2>(),
 					};
 				}
 				else
 				{
-					command = new CastAbilityCommand()
+					Data.Vector2 targetPosition = abilityCastView.TargetPosition.ToModelVector();
+					if (caster.ActionPoints < currentAbility.ActionPoints)
+						UserInterface.GameMessageView.AddMessage("Not enough action points");
+					else if ((caster.Position - targetPosition).Norm > currentAbility.Range)
+						UserInterface.GameMessageView.AddMessage("Not in range");
+					else
 					{
-						Character = selection,
-						CharacterId = selection.Id,
-						Ability = currentAbility,
-						AbilityName = currentAbility.Name,
-						Target = targetPosition.ToModelVector(),
-					};
+						command = new CastAbilityCommand()
+						{
+							Character = caster,
+							CharacterId = caster.Id,
+							Ability = currentAbility,
+							AbilityName = currentAbility.Name,
+							Target = targetPosition,
+						};
+					}
 				}
 
-				Game.Model.ExecuteCommand(command);
+				if (command != null)
+					Game.Model.ExecuteCommand(command);
 				ClearCurrentCommand();
 			}
 
-			if (Input.GetMouseButtonUp(1))
+			if (Input.GetMouseButtonUp(autoCurrentAbility ? InputExtensions.LeftClick : InputExtensions.RightClick))
 				ClearCurrentCommand();
 		}
 
-		private void PickTarget(CharacterModel caster, IAbility ability)
+		private void UpdateCurrentAbility()
+		{
+			CharacterModel caster = Player.Selection.Model;
+
+			if (autoCurrentAbility)
+			{
+				RaycastHit2D hit = Physics2D.Raycast(Camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+				if (hit.collider != null)
+				{
+					CharacterView target = hit.collider.GetComponentInParent<CharacterView>();
+					currentAbility = target != null ? caster.CharacterClass.DefaultAbility : null;
+					if (currentAbility != null)
+						ClearPath();
+					abilityCastView.Change(true, caster, currentAbility);
+				}
+			}
+			
+			if (currentAbility == null)
+				ShowPath(caster.Position, abilityCastView.TargetPosition.ToModelVector());
+		}
+
+		private void PickTarget(CharacterModel caster, bool autoAbility, IAbility ability)
 		{
 			ClearCurrentCommand();
 
@@ -173,13 +167,16 @@ namespace Overmind.Tactics.UnityClient
 			}
 
 			isPickingTarget = true;
+			autoCurrentAbility = autoAbility;
 			currentAbility = ability;
+			UpdateCurrentAbility();
 			abilityCastView.Change(true, Player.Selection.Model, ability);
 		}
 
 		private void ClearCurrentCommand()
 		{
 			isPickingTarget = false;
+			autoCurrentAbility = false;
 			currentAbility = null;
 			abilityCastView.Change(false, null, null);
 			ClearPath();
