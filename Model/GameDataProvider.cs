@@ -23,6 +23,7 @@ namespace Overmind.Tactics.Model
 			return characterClassCollection[name];
 		}
 
+		public IEnumerable<string> ListScenarios() { return ListContentFiles("Scenarios"); }
 		public GameData LoadScenario(string path) { return LoadContent<GameData>("Scenarios/" + path); }
 		public void SaveScenario(string path, GameData gameData)
 		{
@@ -40,6 +41,7 @@ namespace Overmind.Tactics.Model
 			SaveContent("Scenarios/" + path, gameData);
 		}
 
+		public IEnumerable<string> ListGames() { return ListUserFiles("Saves"); }
 		public GameData LoadGame(string path) { return LoadUserData<GameData>("Saves/" + path); }
 		public void SaveGame(string path, GameData gameData) { SaveUserData("Saves/" + path, gameData); }
 	}

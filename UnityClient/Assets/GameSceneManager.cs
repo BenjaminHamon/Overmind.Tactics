@@ -32,10 +32,20 @@ namespace Overmind.Tactics.UnityClient
 
 		private void Awake()
 		{
+			Debug.LogFormat(this, "[GameSceneManager] Awake");
+
 			if (gameView != null) // view first
 				gameView.UpdateModelFromScene();
 			else // model first
 			{
+				if (UnityApplication.GameLoadRequest != null)
+					GameSavePath = UnityApplication.GameLoadRequest;
+				else if (UnityApplication.ScenarioLoadRequest != null)
+					GameScenarioPath = UnityApplication.ScenarioLoadRequest;
+
+				UnityApplication.GameLoadRequest = null;
+				UnityApplication.ScenarioLoadRequest = null;
+
 				if (String.IsNullOrEmpty(GameSavePath) == false)
 					Load(GameSavePath, false);
 				else if (String.IsNullOrEmpty(GameScenarioPath) == false)

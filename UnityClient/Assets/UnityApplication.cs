@@ -20,5 +20,8 @@ namespace Overmind.Tactics.UnityClient
 		}
 
 		public static readonly UnityDataProvider DataProvider;
+
+		public static string GameLoadRequest;
+		public static string ScenarioLoadRequest;
 	}
 }

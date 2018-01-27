@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Overmind.Tactics.Data
 {
@@ -16,11 +18,19 @@ namespace Overmind.Tactics.Data
 		private readonly string contentDirectory;
 		private readonly string userDirectory;
 
+		protected virtual IEnumerable<string> ListContentFiles(string path) { return ListFiles(contentDirectory, path); }
 		protected virtual TData LoadContent<TData>(string path) { return Load<TData>(contentDirectory, path); }
 		protected virtual void SaveContent<TData>(string path, TData data) { Save(contentDirectory, path, data); }
 
+		protected virtual IEnumerable<string> ListUserFiles(string path) { return ListFiles(userDirectory, path); }
 		protected virtual TData LoadUserData<TData>(string path) { return Load<TData>(userDirectory, path); }
 		protected virtual void SaveUserData<TData>(string path, TData data) { Save(userDirectory, path, data); }
+
+		protected virtual IEnumerable<string> ListFiles(string directory, string path)
+		{
+			return Directory.EnumerateFiles(Path.Combine(directory, path), "*.json", SearchOption.TopDirectoryOnly)
+				.Select(filePath => Path.GetFileNameWithoutExtension(filePath));
+		}
 
 		protected virtual TData Load<TData>(string directory, string path)
 		{
