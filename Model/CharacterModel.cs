@@ -72,21 +72,13 @@ namespace Overmind.Tactics.Model
 			if (path.Any() == false)
 				return false;
 
-			List<Vector2> pathTravelled = new List<Vector2>();
-			Vector2 newPosition = Position;
+			int moveLimit = CharacterClass.MoveSpeed * ActionPoints;
+			if (moveLimit == 0)
+				return false;
 
-			foreach (Vector2 pathNode in path)
-			{
-				int requiredActionPoints = CharacterClass.MoveSpeed;
-				if (ActionPoints < requiredActionPoints)
-					break;
-
-				newPosition = pathNode;
-				ActionPoints -= requiredActionPoints;
-				pathTravelled.Add(pathNode);
-			}
-			
-			Position = newPosition;
+			List<Vector2> pathTravelled = path.Take(moveLimit).ToList();
+			ActionPoints -= (int)Math.Ceiling((float)pathTravelled.Count / (float)CharacterClass.MoveSpeed);
+			Position = pathTravelled.Last();
 			Moved?.Invoke(this, pathTravelled);
 			return true;
 		}
