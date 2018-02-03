@@ -74,11 +74,21 @@ namespace Overmind.Tactics.UnityClient
 				gameData.Map = mapGroup.GetChild(0).name;
 
 			List<PlayerView> playerViewCollection = playerGroup.GetComponentsInChildren<PlayerView>(true).ToList();
-			gameData.PlayerCollection = playerViewCollection.Select(p => p.Data).Cast<PlayerData>().ToList();
+			foreach (PlayerView playerView in playerViewCollection)
+			{
+				if (String.IsNullOrEmpty(playerView.Data.Id))
+					playerView.Data.Id = Guid.NewGuid().ToString();
+				gameData.PlayerCollection.Add(playerView.Data);
+			}
 
 			List<CharacterView> characterViewCollection = characterGroup.GetComponentsInChildren<CharacterView>(true).ToList();
 			foreach (CharacterView characterView in characterViewCollection)
 			{
+				if (String.IsNullOrEmpty(characterView.Data.Id))
+					characterView.Data.Id = Guid.NewGuid().ToString();
+				PlayerData ownerByName = gameData.PlayerCollection.SingleOrDefault(player => player.Name == characterView.Data.Owner);
+				if (ownerByName != null)
+					characterView.Data.Owner = ownerByName.Id;
 				characterView.Data.Position = ((UnityEngine.Vector2)characterView.transform.localPosition).ToModelVector();
 				gameData.CharacterCollection.Add(characterView.Data);
 			}
@@ -112,6 +122,7 @@ namespace Overmind.Tactics.UnityClient
 				PlayerView playerView = GameObjectExtensions.Instantiate(playerPrefab, playerGroup).GetComponent<PlayerView>();
 				playerView.Data = Data.PlayerCollection.Single(p => p.Id == playerModel.Id);
 				playerView.Model = playerModel;
+				playerView.UpdateFromModel();
 				playerCollection.Add(playerView);
 
 				HumanPlayerController playerController
@@ -128,6 +139,7 @@ namespace Overmind.Tactics.UnityClient
 				CharacterView characterView = GameObjectExtensions.Instantiate(characterPrefab, characterGroup).GetComponent<CharacterView>();
 				characterView.Data = Data.CharacterCollection.Single(c => c.Id == characterModel.Id);
 				characterView.Model = characterModel;
+				characterView.UpdateFromModel();
 				characterCollection.Add(characterView);
 			}
 

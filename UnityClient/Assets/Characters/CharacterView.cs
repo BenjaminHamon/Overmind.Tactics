@@ -31,15 +31,20 @@ namespace Overmind.Tactics.UnityClient
 			if (Model == null)
 				Model = new CharacterModel(Data, UnityApplication.DataProvider.GetCharacterClass(Data.CharacterClass), null, true);
 
-			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner?.Name ?? "null");
-			characterSprite.sprite = Resources.Load<Sprite>("Characters/" + Model.CharacterClass.CharacterSprite);
-			transform.localPosition = Model.Position.ToUnityVector();
-			healthBar.localScale = new Vector3(Model.HealthPoints == 0 ? 0 : (float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
+			UpdateFromModel();
 
 			Model.Moved += Move;
 			Model.HealthPointsChanged += OnHealthPointsChanged;
 			Model.AbilityCast += OnAbilityCast;
 			Model.Died += _ => Destroy(gameObject);
+		}
+
+		public void UpdateFromModel()
+		{
+			name = String.Format("Character ({0}, {1})", Model.CharacterClass.Name, Model.Owner?.Name ?? "null");
+			characterSprite.sprite = Resources.Load<Sprite>("Characters/" + Model.CharacterClass.CharacterSprite);
+			transform.localPosition = Model.Position.ToUnityVector();
+			healthBar.localScale = new Vector3(Model.HealthPoints == 0 ? 0 : (float)Model.HealthPoints / Model.CharacterClass.HealthPoints, 1, 1);
 		}
 
 		#region Movement

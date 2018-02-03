@@ -48,10 +48,15 @@ namespace Overmind.Tactics.UnityClient
 			if (Model == null)
 				Model = new PlayerModel(Data);
 
-			name = String.Format("Player ({0})", Model.Name);
+			UpdateFromModel();
 
 			Model.TurnStarted += _ => Enable();
 			Model.TurnEnded += _ => Disable();
+		}
+
+		public void UpdateFromModel()
+		{
+			name = String.Format("Player ({0})", Model.Name);
 		}
 
 		public void Enable()
