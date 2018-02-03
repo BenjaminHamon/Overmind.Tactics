@@ -70,7 +70,7 @@ namespace Overmind.Tactics.Model.Navigation
 				currentNode = knownNodes.Where(n => (n.Explored == false) && n.Accessible).OrderBy(n => n.DirectDistanceToDestination).FirstOrDefault();
 				loopIndex += 1;
 				if (loopIndex > 1000)
-					throw new TimeoutException("[BasicNavigation] FindPath timed out");
+					throw new TimeoutException("[AstarNavigation] FindPath timed out");
 			}
 
 			// Found no path to destination
