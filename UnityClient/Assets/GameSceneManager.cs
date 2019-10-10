@@ -35,43 +35,62 @@ namespace Overmind.Tactics.UnityClient
 			Debug.LogFormat(this, "[GameSceneManager] Awake");
 
 			if (gameView != null) // view first
+			{
 				gameView.UpdateModelFromScene();
+			}
 			else // model first
 			{
 				if (UnityApplication.GameLoadRequest != null)
+				{
 					GameSavePath = UnityApplication.GameLoadRequest;
+				}
 				else if (UnityApplication.ScenarioLoadRequest != null)
+				{
 					GameScenarioPath = UnityApplication.ScenarioLoadRequest;
+				}
 
 				UnityApplication.GameLoadRequest = null;
 				UnityApplication.ScenarioLoadRequest = null;
 
 				if (String.IsNullOrEmpty(GameSavePath) == false)
-					Load(GameSavePath, false);
+				{
+					LoadGame(GameSavePath);
+				}
 				else if (String.IsNullOrEmpty(GameScenarioPath) == false)
-					Load(GameScenarioPath, true);
+				{
+					LoadScenario(GameScenarioPath);
+				}
 				else
+				{
 					SetGame(new GameData());
+				}
 			}
 		}
 
 		public void SaveScenario(string path)
 		{
+			Debug.LogFormat(this, "[GameSceneManager] Saving scenario to {0}", path);
 			UnityApplication.DataProvider.SaveScenario(path, gameView.Model.ActiveData);
-			Debug.LogFormat(this, "[GameSceneManager] Saved to {0}", path);
 		}
 
 		public void SaveGame(string path, bool withHistory)
 		{
+			Debug.LogFormat(this, "[GameSceneManager] Saving game to {0}", path);
 			UnityApplication.DataProvider.SaveGame(path, withHistory ? gameView.Model.SaveData : gameView.Model.ActiveData);
-			Debug.LogFormat(this, "[GameSceneManager] Saved to {0}", path);
 		}
 
-		public void Load(string path, bool asScenario)
+		public void LoadScenario(string path)
 		{
-			GameData gameData = asScenario ? UnityApplication.DataProvider.LoadScenario(path) : UnityApplication.DataProvider.LoadGame(path);
+			Debug.LogFormat(this, "[GameSceneManager] Loading scenario from {0}", path);
+			GameData gameData = UnityApplication.DataProvider.LoadScenario(path);
 			SetGame(gameData);
-			Debug.LogFormat(this, "[GameSceneManager] Loaded from {0}", path);
+		}
+
+		public void LoadGame(string path)
+		{
+			Debug.LogFormat(this, "[GameSceneManager] Loading game from {0}", path);
+			GameData gameData = UnityApplication.DataProvider.LoadGame(path);
+			SetGame(gameData);
 		}
 
 		private void SetGame(GameData gameData)

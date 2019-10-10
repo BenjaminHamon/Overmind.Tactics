@@ -29,7 +29,7 @@ namespace Overmind.Tactics.UnityClient.Editor
 			if (GUILayout.Button("Save scenario"))
 				manager.SaveScenario(manager.GameScenarioPath);
 			if (GUILayout.Button("Load scenario"))
-				manager.Load(manager.GameScenarioPath, true);
+				manager.LoadScenario(manager.GameScenarioPath);
 			EditorGUI.EndDisabledGroup();
 			EditorGUILayout.EndHorizontal();
 
@@ -40,7 +40,7 @@ namespace Overmind.Tactics.UnityClient.Editor
 			if (GUILayout.Button("Save with history"))
 				manager.SaveGame(manager.GameSavePath, true);
 			if (GUILayout.Button("Load"))
-				manager.Load(manager.GameSavePath, false);
+				manager.LoadGame(manager.GameSavePath);
 			EditorGUI.EndDisabledGroup();
 			EditorGUILayout.EndHorizontal();
 		}
