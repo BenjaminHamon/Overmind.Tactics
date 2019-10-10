@@ -115,6 +115,7 @@ namespace Overmind.Tactics.UnityClient
 				GameObject mapPrefab = Resources.Load<GameObject>("Maps/" + Model.Map);
 				GameObject mapObject = GameObjectExtensions.Instantiate(mapPrefab, mapGroup);
 				mapObject.name = Model.Map;
+				mapObject.transform.localPosition = Vector3.zero;
 			}
 
 			foreach (PlayerModel playerModel in Model.PlayerCollection)
