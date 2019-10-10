@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityClient.Editor", "UnityClient\UnityClient.Editor.csproj", "{B4B22F55-01C2-61A0-FE5D-CED04A59893D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityClient", "UnityClient\UnityClient.csproj", "{A4F48336-4464-8EC5-774B-4DE9B9E8D63A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overmind.Tactics.Data", "Data\Overmind.Tactics.Data.csproj", "{DDE61537-FC52-4682-8B81-80C9257CBCE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overmind.Tactics.Model", "Model\Overmind.Tactics.Model.csproj", "{3221F396-3C43-45BF-843D-3E59A97A5533}"
@@ -20,16 +16,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overmind.Tactics.UnityClientDependencies", "UnityClientDependencies\Overmind.Tactics.UnityClientDependencies.csproj", "{2A7AD731-682F-47BF-80D1-2618CB83C290}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "UnityClient\Assembly-CSharp.csproj", "{6C9E1067-45D3-8D51-00C4-572C36C1182E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "UnityClient\Assembly-CSharp-Editor.csproj", "{88F957FD-2E61-DF8C-5038-1E0EDB844F2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B4B22F55-01C2-61A0-FE5D-CED04A59893D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4B22F55-01C2-61A0-FE5D-CED04A59893D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4F48336-4464-8EC5-774B-4DE9B9E8D63A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4F48336-4464-8EC5-774B-4DE9B9E8D63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDE61537-FC52-4682-8B81-80C9257CBCE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDE61537-FC52-4682-8B81-80C9257CBCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDE61537-FC52-4682-8B81-80C9257CBCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,6 +38,10 @@ Global
 		{2A7AD731-682F-47BF-80D1-2618CB83C290}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A7AD731-682F-47BF-80D1-2618CB83C290}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A7AD731-682F-47BF-80D1-2618CB83C290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C9E1067-45D3-8D51-00C4-572C36C1182E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C9E1067-45D3-8D51-00C4-572C36C1182E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F957FD-2E61-DF8C-5038-1E0EDB844F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F957FD-2E61-DF8C-5038-1E0EDB844F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
