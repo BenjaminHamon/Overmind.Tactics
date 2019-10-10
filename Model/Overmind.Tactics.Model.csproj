@@ -12,8 +12,8 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <IntermediateOutputPath>$(SolutionDir)/.build/Model/obj/$(Configuration)</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)/.build/Model/bin/$(Configuration)</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)/.build/Model/Intermediate/$(Configuration)</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)/.build/Model/Binaries/$(Configuration)</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
