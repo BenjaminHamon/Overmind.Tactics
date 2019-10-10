@@ -13,7 +13,7 @@ namespace Overmind.Tactics.Model
 
 		private readonly Dictionary<string, CharacterClass> characterClassCollection = new Dictionary<string, CharacterClass>();
 
-		public CharacterClass GetCharacterClass(string name)
+		public CharacterClass LoadCharacterClass(string name)
 		{
 			if (String.IsNullOrEmpty(name))
 				throw new ArgumentException("Name must not be empty", nameof(name));
@@ -44,5 +44,9 @@ namespace Overmind.Tactics.Model
 		public IEnumerable<string> ListGames() { return ListUserFiles("Saves"); }
 		public GameData LoadGame(string path) { return LoadUserData<GameData>("Saves/" + path); }
 		public void SaveGame(string path, GameData gameData) { SaveUserData("Saves/" + path, gameData); }
+
+		public IEnumerable<string> ListReplays() { return ListUserFiles("Replays"); }
+		public GameData LoadReplay(string path) { return LoadUserData<GameData>("Replays/" + path); }
+		public void SaveReplay(string path, GameData gameData) { SaveUserData("Replays/" + path, gameData); }
 	}
 }

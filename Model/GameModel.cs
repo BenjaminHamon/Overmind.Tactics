@@ -14,11 +14,11 @@ namespace Overmind.Tactics.Model
 			this.dataProvider = dataProvider;
 
 			ActiveData = gameData;
-			SaveData = dataProvider.Copy(gameData);
+			ReplayData = dataProvider.Copy(gameData);
 
 			PlayerCollection = new List<PlayerModel>(gameData.PlayerCollection.Select(playerData => new PlayerModel(playerData)));
 			CharacterCollection = new List<CharacterModel>(gameData.CharacterCollection
-				.Select(characterData => new CharacterModel(characterData, dataProvider.GetCharacterClass(characterData.CharacterClass),
+				.Select(characterData => new CharacterModel(characterData, dataProvider.LoadCharacterClass(characterData.CharacterClass),
 					PlayerCollection.Single(player => player.Id == characterData.Owner), ActiveData.Turn == 0)));
 
 			if (String.IsNullOrEmpty(ActiveData.ActivePlayer) == false)
@@ -30,7 +30,7 @@ namespace Overmind.Tactics.Model
 		public INavigation Navigation { get; private set; }
 
 		public GameData ActiveData { get; }
-		public GameData SaveData { get; }
+		public GameData ReplayData { get; }
 		
 		public string Map { get { return ActiveData.Map; } }
 		public List<PlayerModel> PlayerCollection { get; } = new List<PlayerModel>();
@@ -65,7 +65,7 @@ namespace Overmind.Tactics.Model
 				return;
 
 			if (command.TryExecute(this))
-				SaveData.CommandHistory.Add(command);
+				ReplayData.CommandHistory.Add(command);
 		}
 
 		public void Start()

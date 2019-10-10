@@ -13,8 +13,14 @@ namespace Overmind.Tactics.UnityClient
 		[SerializeField]
 		private GameView gameView;
 
-		public string GameScenarioPath;
+		[SerializeField]
+		private GameObject replayControllerPrefab;
+		[SerializeField]
+		private ReplayController replayController;
+
 		public string GameSavePath;
+		public string GameScenarioPath;
+		public string GameReplayPath;
 
 		// The application initialization when running for release is model first.
 		// We load a game data, create a model for it and then apply it to the view which initializes itself accordingly.
@@ -44,17 +50,26 @@ namespace Overmind.Tactics.UnityClient
 				{
 					GameSavePath = UnityApplication.GameLoadRequest;
 				}
+				else if (UnityApplication.ReplayLoadRequest != null)
+				{
+					GameReplayPath = UnityApplication.ReplayLoadRequest;
+				}
 				else if (UnityApplication.ScenarioLoadRequest != null)
 				{
 					GameScenarioPath = UnityApplication.ScenarioLoadRequest;
 				}
 
 				UnityApplication.GameLoadRequest = null;
+				UnityApplication.ReplayLoadRequest = null;
 				UnityApplication.ScenarioLoadRequest = null;
 
 				if (String.IsNullOrEmpty(GameSavePath) == false)
 				{
 					LoadGame(GameSavePath);
+				}
+				else if (String.IsNullOrEmpty(GameReplayPath) == false)
+				{
+					LoadReplay(GameReplayPath);
 				}
 				else if (String.IsNullOrEmpty(GameScenarioPath) == false)
 				{
@@ -73,10 +88,16 @@ namespace Overmind.Tactics.UnityClient
 			UnityApplication.DataProvider.SaveScenario(path, gameView.Model.ActiveData);
 		}
 
-		public void SaveGame(string path, bool withHistory)
+		public void SaveGame(string path)
 		{
 			Debug.LogFormat(this, "[GameSceneManager] Saving game to {0}", path);
-			UnityApplication.DataProvider.SaveGame(path, withHistory ? gameView.Model.SaveData : gameView.Model.ActiveData);
+			UnityApplication.DataProvider.SaveGame(path, gameView.Model.ActiveData);
+		}
+
+		public void SaveReplay(string path)
+		{
+			Debug.LogFormat(this, "[GameSceneManager] Saving replay to {0}", path);
+			UnityApplication.DataProvider.SaveReplay(path, gameView.Model.ReplayData);
 		}
 
 		public void LoadScenario(string path)
@@ -91,6 +112,24 @@ namespace Overmind.Tactics.UnityClient
 			Debug.LogFormat(this, "[GameSceneManager] Loading game from {0}", path);
 			GameData gameData = UnityApplication.DataProvider.LoadGame(path);
 			SetGame(gameData);
+		}
+
+		public void LoadReplay(string path)
+		{
+			Debug.LogFormat(this, "[GameSceneManager] Loading replay from {0}", path);
+
+			if (replayController != null)
+			{
+				DestroyImmediate(replayController.gameObject);
+				replayController = null;
+			}
+
+			GameData gameData = UnityApplication.DataProvider.LoadReplay(path);
+			SetGame(gameData);
+
+			replayController = GameObjectExtensions.Instantiate(replayControllerPrefab, null).GetComponent<ReplayController>();
+			replayController.GameView = gameView;
+			replayController.Resume();
 		}
 
 		private void SetGame(GameData gameData)

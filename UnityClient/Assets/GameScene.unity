@@ -300,8 +300,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gamePrefab: {fileID: 1398412667643388, guid: b131c5bf611bdc74d8285f0878b788a4, type: 3}
   gameView: {fileID: 0}
-  GameScenarioPath: 
+  replayControllerPrefab: {fileID: 5841160910071082078, guid: b6afb452e8bf47b49a39adfb5253ea53,
+    type: 3}
+  replayController: {fileID: 0}
   GameSavePath: 
+  GameScenarioPath: 
+  GameReplayPath: 
 --- !u!4 &420879077
 Transform:
   m_ObjectHideFlags: 0

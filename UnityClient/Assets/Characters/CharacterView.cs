@@ -29,7 +29,7 @@ namespace Overmind.Tactics.UnityClient
 		private void Start()
 		{
 			if (Model == null)
-				Model = new CharacterModel(Data, UnityApplication.DataProvider.GetCharacterClass(Data.CharacterClass), null, true);
+				Model = new CharacterModel(Data, UnityApplication.DataProvider.LoadCharacterClass(Data.CharacterClass), null, true);
 
 			UpdateFromModel();
 

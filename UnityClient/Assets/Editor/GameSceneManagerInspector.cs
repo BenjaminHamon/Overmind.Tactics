@@ -15,15 +15,6 @@ namespace Overmind.Tactics.UnityClient.Editor
 
 			EditorGUILayout.Separator();
 
-			//EditorGUILayout.BeginHorizontal();
-			//if (GUILayout.Button("Update from scene"))
-			//	manager.UpdateModelFromScene();
-			//if (GUILayout.Button("Apply to scene"))
-			//	manager.ApplyModelToScene();
-			//if (GUILayout.Button("Reset scene"))
-			//	manager.ResetScene();
-			//EditorGUILayout.EndHorizontal();
-
 			EditorGUILayout.BeginHorizontal();
 			EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(manager.GameScenarioPath));
 			if (GUILayout.Button("Save scenario"))
@@ -35,12 +26,19 @@ namespace Overmind.Tactics.UnityClient.Editor
 
 			EditorGUILayout.BeginHorizontal();
 			EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(manager.GameSavePath));
-			if (GUILayout.Button("Save"))
-				manager.SaveGame(manager.GameSavePath, false);
-			if (GUILayout.Button("Save with history"))
-				manager.SaveGame(manager.GameSavePath, true);
-			if (GUILayout.Button("Load"))
+			if (GUILayout.Button("Save game"))
+				manager.SaveGame(manager.GameSavePath);
+			if (GUILayout.Button("Load game"))
 				manager.LoadGame(manager.GameSavePath);
+			EditorGUI.EndDisabledGroup();
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			EditorGUI.BeginDisabledGroup(String.IsNullOrEmpty(manager.GameReplayPath));
+			if (GUILayout.Button("Save replay"))
+				manager.SaveGame(manager.GameReplayPath);
+			if (GUILayout.Button("Load replay"))
+				manager.LoadGame(manager.GameReplayPath);
 			EditorGUI.EndDisabledGroup();
 			EditorGUILayout.EndHorizontal();
 		}

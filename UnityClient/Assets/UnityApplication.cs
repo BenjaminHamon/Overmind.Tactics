@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Overmind.Tactics.Data;
-using Overmind.Tactics.Model;
-using Overmind.Tactics.Model.Navigation;
-using Overmind.Tactics.UnityClient.Unity;
-using UnityEngine;
 
 namespace Overmind.Tactics.UnityClient
 {
@@ -12,16 +7,18 @@ namespace Overmind.Tactics.UnityClient
 		static UnityApplication()
 		{
 			JsonSerializer serializer = new JsonSerializer() { Formatting = Formatting.Indented };
+
 #if UNITY_EDITOR
 			DataProvider = new UnityDataProvider(serializer, "Assets/Resources", "UserData");
 #else
-			DataProvider = new UnityDataProvider(serializer, null, Application.persistentDataPath);
+			DataProvider = new UnityDataProvider(serializer, null, UnityEngine.Application.persistentDataPath);
 #endif
 		}
 
 		public static readonly UnityDataProvider DataProvider;
 
 		public static string GameLoadRequest;
+		public static string ReplayLoadRequest;
 		public static string ScenarioLoadRequest;
 	}
 }
