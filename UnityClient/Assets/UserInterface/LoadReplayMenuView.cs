@@ -3,23 +3,23 @@ using UnityEngine.SceneManagement;
 
 namespace Overmind.Tactics.UnityClient.UserInterface
 {
-	public class LoadGameMenuView : MonoBehaviour
+	public class LoadReplayMenuView : MonoBehaviour
 	{
 		[SerializeField]
 		private ListView listView;
 
 		private void Start()
 		{
-			listView.ItemsSource = () => UnityApplication.DataProvider.ListGames();
+			listView.ItemsSource = () => UnityApplication.DataProvider.ListReplays();
 			listView.UpdateItems();
 		}
 
-		public void LoadGame()
+		public void LoadReplay()
 		{
 			if (listView.SelectedItem == null)
 				return;
 
-			UnityApplication.GameLoadRequest = (string)listView.SelectedValue;
+			UnityApplication.ReplayLoadRequest = (string)listView.SelectedValue;
 			SceneManager.LoadScene("GameScene");
 		}
 	}
