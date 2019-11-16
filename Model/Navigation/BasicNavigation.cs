@@ -23,7 +23,7 @@ namespace Overmind.Tactics.Model.Navigation
 			int loopIndex = 0;
 			while (current != end)
 			{
-				Vector2 bestNext = Vector2.Zero;
+				Vector2? bestNext = null;
 				float bestDistance = Single.PositiveInfinity;
 
 				foreach (Vector2 allowedMove in NavigationRules.AllowedMoveCollection)
@@ -44,11 +44,11 @@ namespace Overmind.Tactics.Model.Navigation
 				}
 
 				// Found no path to destination
-				if (bestNext == Vector2.Zero)
+				if (bestNext == null)
 					return new List<Vector2>();
 
-				path.Add(bestNext);
-				current = bestNext;
+				path.Add(bestNext.Value);
+				current = bestNext.Value;
 
 				loopIndex += 1;
 				if (loopIndex > 1000)
