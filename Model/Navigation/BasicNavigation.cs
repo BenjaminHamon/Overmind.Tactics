@@ -29,7 +29,8 @@ namespace Overmind.Tactics.Model.Navigation
 				foreach (Vector2 allowedMove in NavigationRules.AllowedMoveCollection)
 				{
 					Vector2 next = current + allowedMove;
-					if (path.Contains(next) == false)
+
+					if ((next != start) && (path.Contains(next) == false))
 					{
 						if (isTileAccessible(next))
 						{
